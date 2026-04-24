@@ -55,7 +55,6 @@
     transition: background 0.3s ease, color 0.3s ease;
   }
 
-  /* ---------- HEADER ---------- */
   header {
     padding: 24px 20px 16px;
     border-bottom: 1px solid var(--line);
@@ -133,7 +132,6 @@
     font-size: 14px;
   }
 
-  /* ---------- TABS ---------- */
   nav.tabs {
     position: fixed;
     bottom: 0;
@@ -180,7 +178,6 @@
     border-radius: 0 0 2px 2px;
   }
 
-  /* ---------- CONTENT ---------- */
   main { padding: 20px; max-width: 720px; margin: 0 auto; }
 
   .view { display: none; animation: fadeIn 0.3s ease; }
@@ -190,7 +187,6 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* ---------- TODAY VIEW ---------- */
   .day-banner {
     background: var(--bg-elev);
     border: 1px solid var(--line);
@@ -313,7 +309,49 @@
   }
   .section-title:first-child { margin-top: 0; }
 
-  /* ---------- WEEK VIEW ---------- */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 28px 0 12px;
+  }
+  .section-header:first-child { margin-top: 0; }
+  .section-header .section-title { margin: 0; }
+  .section-progress {
+    font-family: Georgia, serif;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
+  }
+
+  .tracker-banner {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .tracker-date {
+    font-family: Georgia, serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .tracker-score {
+    font-family: Georgia, serif;
+    font-size: 15px;
+    color: var(--accent);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
   .week-card {
     background: var(--bg-elev);
     border: 1px solid var(--line);
@@ -358,7 +396,6 @@
     color: var(--ink-soft);
   }
 
-  /* ---------- RULES VIEW ---------- */
   .rule-card {
     background: var(--bg-elev);
     border: 1px solid var(--line);
@@ -367,12 +404,8 @@
     margin-bottom: 10px;
     box-shadow: var(--shadow);
   }
-  .rule-card.bad {
-    border-left: 3px solid var(--danger);
-  }
-  .rule-card.good {
-    border-left: 3px solid var(--success);
-  }
+  .rule-card.bad { border-left: 3px solid var(--danger); }
+  .rule-card.good { border-left: 3px solid var(--success); }
   .rule-title {
     font-family: Georgia, serif;
     font-size: 15px;
@@ -385,31 +418,91 @@
     line-height: 1.55;
   }
 
-  .ritual-step {
+  .trackable {
     display: flex;
     gap: 14px;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--line);
+    align-items: flex-start;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
   }
-  .ritual-step:last-child { border-bottom: none; }
-  .ritual-num {
+  .trackable:active { transform: scale(0.995); }
+  .trackable.done {
+    border-left: 3px solid var(--success);
+  }
+  .trackable.done .trackable-name,
+  .trackable.done .trackable-detail {
+    color: var(--ink-mute);
+  }
+  .trackable.done .trackable-name {
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--ink-mute);
+  }
+
+  .trackable-check {
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid var(--line);
+    border-radius: 6px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    background: transparent;
+    margin-top: 1px;
+  }
+  .trackable.done .trackable-check {
+    background: var(--success);
+    border-color: var(--success);
+  }
+  .trackable.done .trackable-check::after {
+    content: "✓";
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .trackable-num {
     font-family: Georgia, serif;
     font-style: italic;
-    font-size: 22px;
+    font-size: 20px;
     color: var(--accent);
-    min-width: 26px;
+    min-width: 22px;
     line-height: 1;
-    margin-top: 2px;
+    margin-top: 3px;
+    flex-shrink: 0;
   }
-  .ritual-content { flex: 1; }
-  .ritual-name {
-    font-weight: 600;
-    font-size: 14px;
-    margin-bottom: 2px;
+  .trackable.done .trackable-num { color: var(--ink-mute); }
+
+  .trackable-content { flex: 1; min-width: 0; }
+  .trackable-name {
+    font-family: Georgia, serif;
+    font-size: 15px;
+    font-weight: 400;
+    margin-bottom: 3px;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    transition: color 0.15s;
   }
-  .ritual-detail {
+  .trackable-detail {
     font-size: 13px;
     color: var(--ink-soft);
+    line-height: 1.5;
+    transition: color 0.15s;
+  }
+  .trackable-when {
+    font-size: 11px;
+    color: var(--ink-mute);
+    margin-top: 4px;
+    font-style: italic;
+    letter-spacing: 0.02em;
   }
 
   .issue-card {
@@ -438,7 +531,6 @@
     line-height: 1.55;
   }
 
-  /* ---------- GROCERY VIEW ---------- */
   .grocery-group {
     background: var(--bg-elev);
     border: 1px solid var(--line);
@@ -563,7 +655,6 @@
 
 <main>
 
-  <!-- ========== TODAY VIEW ========== -->
   <section class="view active" id="view-today">
     <div class="day-selector" id="daySelector"></div>
     <div class="day-banner">
@@ -576,19 +667,30 @@
     <div id="mealsContainer"></div>
   </section>
 
-  <!-- ========== WEEK VIEW ========== -->
   <section class="view" id="view-week">
     <div class="section-title">Weekly Overview</div>
     <div id="weekContainer"></div>
   </section>
 
-  <!-- ========== RULES VIEW ========== -->
   <section class="view" id="view-rules">
-    <div class="section-title">Wake-up Ritual</div>
-    <div class="rule-card" id="ritualCard"></div>
+    <div class="tracker-banner">
+      <div class="tracker-date" id="trackerDate">—</div>
+      <div class="tracker-score" id="trackerScore">0 / 0</div>
+    </div>
 
-    <div class="section-title">Daily Non-Negotiables</div>
+    <div class="section-header">
+      <div class="section-title">Wake-up Ritual</div>
+      <div class="section-progress" id="ritualProgress">0 / 0</div>
+    </div>
+    <div id="ritualList"></div>
+
+    <div class="section-header">
+      <div class="section-title">Daily Non-Negotiables</div>
+      <div class="section-progress" id="nnProgress">0 / 0</div>
+    </div>
     <div id="nonNegotiables"></div>
+
+    <button class="reset-btn" id="resetTracker">Reset today's checks</button>
 
     <div class="section-title">Blood Report — What This Fixes</div>
     <div id="issuesList"></div>
@@ -600,7 +702,6 @@
     <div id="neverEat"></div>
   </section>
 
-  <!-- ========== GROCERY VIEW ========== -->
   <section class="view" id="view-grocery">
     <div class="section-title">Sunday Grocery Run</div>
     <div id="groceryContainer"></div>
@@ -619,29 +720,24 @@
 <footer>— 3L water daily · dinner by 8pm · no afternoon sleep —</footer>
 
 <script>
-/* =================================================================
-   DATA — edit this section to modify the plan
-   ================================================================= */
-
 const DAILY_NON_NEGOTIABLES = [
-  { name: "5 walnuts", when: "Every morning with almonds", why: "Raises HDL — your #1 priority" },
-  { name: "8–10 soaked almonds", when: "Every morning (soak night before)", why: "Brain health, magnesium, Vit E" },
-  { name: "1 tsp flaxseeds", when: "In oats or smoothie or curd", why: "Omega-3, fibre — anti-inflammatory" },
-  { name: "2 eggs minimum", when: "Breakfast or snack or dinner", why: "Protein + Vit D — eat whole eggs" },
-  { name: "1 bowl curd", when: "With every lunch AND dinner", why: "Gut health, probiotics" },
-  { name: "2 sq dark chocolate 70%+", when: "Every evening snack", why: "Magnesium for anxiety, HDL boost" },
-  { name: "3L water", when: "Throughout the day", why: "Digestion, metabolism, kidney health" },
-  { name: "20 min morning sunlight", when: "After wake-up ritual", why: "Vit D, circadian rhythm, mood" },
-  { name: "Dinner by 8pm", when: "Every day without exception", why: "Biggest fat loss accelerator" },
-  { name: "Salad before every lunch", when: "Cucumber + tomato + onion", why: "Controls portion, adds fibre" }
+  { id: "nn-walnuts", name: "5 walnuts", when: "Every morning with almonds", why: "Raises HDL — your #1 priority" },
+  { id: "nn-almonds", name: "8–10 soaked almonds", when: "Every morning (soak night before)", why: "Brain health, magnesium, Vit E" },
+  { id: "nn-flax", name: "1 tsp flaxseeds", when: "In oats or smoothie or curd", why: "Omega-3, fibre — anti-inflammatory" },
+  { id: "nn-eggs", name: "2 eggs minimum", when: "Breakfast or snack or dinner", why: "Protein + Vit D — eat whole eggs" },
+  { id: "nn-curd", name: "1 bowl curd", when: "With every lunch AND dinner", why: "Gut health, probiotics" },
+  { id: "nn-choc", name: "2 sq dark chocolate 70%+", when: "Every evening snack", why: "Magnesium for anxiety, HDL boost" },
+  { id: "nn-water", name: "3L water", when: "Throughout the day", why: "Digestion, metabolism, kidney health" },
+  { id: "nn-sun", name: "20 min morning sunlight", when: "After wake-up ritual", why: "Vit D, circadian rhythm, mood" },
+  { id: "nn-dinner", name: "Dinner by 8pm", when: "Every day without exception", why: "Biggest fat loss accelerator" },
+  { id: "nn-salad", name: "Salad before every lunch", when: "Cucumber + tomato + onion", why: "Controls portion, adds fibre" }
 ];
 
 const WAKE_RITUAL = [
-  { step: 1, name: "Pantop 40 (if on course)", detail: "With 1 glass plain water only. Wait 30 min before anything acidic." },
-  { step: 2, name: "Warm water + lemon", detail: "1 glass warm water + juice of ½ lemon." },
-  { step: 3, name: "Almonds + walnuts", detail: "8–10 soaked almonds + 5 raw walnuts." },
-  { step: 4, name: "20 min sunlight", detail: "Stand or sit outside. Sets circadian rhythm." },
-  { step: 5, name: "Breakfast", detail: "Template A or B depending on day. Eat slowly, no phone." }
+  { id: "r-lemon", step: 1, name: "Warm water + lemon", detail: "1 glass warm water + juice of ½ lemon." },
+  { id: "r-nuts", step: 2, name: "Almonds + walnuts", detail: "8–10 soaked almonds + 5 raw walnuts." },
+  { id: "r-sun", step: 3, name: "20 min sunlight", detail: "Stand or sit outside. Sets circadian rhythm." },
+  { id: "r-breakfast", step: 4, name: "Breakfast", detail: "Template A or B depending on day. Eat slowly, no phone." }
 ];
 
 const ISSUES = [
@@ -650,7 +746,7 @@ const ISSUES = [
   { name: "Vitamin D — DEFICIENT", values: "Current 12.4 ng/mL · Target >30", fix: "Retest now. Maintenance dose per doctor + 20 min sunlight + eggs + fish." },
   { name: "Eosinophils — HIGH", values: "Current 588 /uL · Target <500", fix: "Pineapple/papaya daily (bromelain), zero processed food. Normalises in 3–4 months." },
   { name: "Blood Sugar — PERFECT", values: "Current 87 mg/dL · HbA1c 5.3%", fix: "Protect at all costs. No sugar in tea, no biscuits, no cold drinks." },
-  { name: "Gas / Acidity", values: "Active issue", fix: "Pantop 40 first, wait 30 min, then lemon water. Hing + jeera in dal. Skip raw onion temporarily." }
+  { name: "Gas / Acidity", values: "Active issue", fix: "Warm water + lemon in morning. Hing + jeera in dal. Skip raw onion temporarily until gut settles." }
 ];
 
 const ALWAYS_EAT = [
@@ -678,8 +774,7 @@ const NEVER_EAT = [
   { food: "Full-cream milk or cream", why: "Saturated fat raises non-HDL. Use toned milk." },
   { food: "Reused cooking oil", why: "Carcinogenic at high heat. Never reuse." },
   { food: "Cold drinks/milk in winter", why: "Your DNS cold allergy. Room temp in winter." },
-  { food: "Sprouts when gas is bad", why: "Replace with roasted chana during Pantop course." },
-  { food: "Raw onion in salad (temp)", why: "Worsens gas. Use cooked onion till gut heals." }
+  { food: "Raw onion in salad (temp)", why: "Worsens gas. Use cooked onion till gut settles." }
 ];
 
 const DAYS = [
@@ -688,7 +783,7 @@ const DAYS = [
     note: "Full veg. Rajma protein = comparable to meat. Add hing + jeera to dal.",
     summary: "Rajma/chana lunch · Paneer tikka + moong dal dinner",
     meals: [
-      { time: "Wake-up", name: "Wake-up ritual", detail: "Pantop 40 → wait 30 min → warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
+      { time: "Wake-up", name: "Wake-up ritual", detail: "Warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
       { time: "9:00 AM · Breakfast", name: "Breakfast A — Pintola oats bowl", detail: "1 serving Pintola high-protein oats · 200ml low-fat milk · 1 tsp mixed seeds · 1 tsp peanut butter · 1 fruit", kcal: "~420" },
       { time: "12:00 PM · Mid-morning", name: "Roasted chana + chaas", detail: "30g roasted chana · 1 glass chaas (low-fat curd + water + jeera)", kcal: "~150" },
       { time: "1:30 PM · Lunch", name: "Rajma/chana curry + brown rice", detail: "SALAD FIRST · 1 bowl rajma or chana curry · 1 katori brown rice · 1 bowl sabzi · 1 bowl curd", kcal: "~490" },
@@ -702,7 +797,7 @@ const DAYS = [
     note: "Fish lunch = omega-3 for HDL. Hilsa is best. Avocado at breakfast = HDL booster.",
     summary: "Hilsa/rohu curry lunch · Grilled chicken dinner",
     meals: [
-      { time: "Wake-up", name: "Wake-up ritual", detail: "Pantop 40 → wait 30 min → warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
+      { time: "Wake-up", name: "Wake-up ritual", detail: "Warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
       { time: "9:00 AM · Breakfast", name: "Breakfast B — Omelette + avocado", detail: "3 whole eggs (onion + capsicum + spinach, ½ tsp olive oil) · 1 multigrain toast · ½ avocado mashed (lemon + black pepper)", kcal: "~460" },
       { time: "12:00 PM · Mid-morning", name: "Boiled eggs + black coffee", detail: "2 whole boiled eggs (pre-boiled) · 1 cup black coffee, no sugar", kcal: "~160" },
       { time: "1:30 PM · Lunch", name: "Hilsa/rohu fish curry + rotis", detail: "SALAD FIRST · 120–150g hilsa or rohu fish curry (light oil) · 2 whole wheat rotis · 1 bowl sabzi · 1 bowl curd", kcal: "~530" },
@@ -716,7 +811,7 @@ const DAYS = [
     note: "Sprouts are anti-inflammatory — good for eosinophils. Swap for roasted chana if gas.",
     summary: "Chicken curry lunch · Egg bhurji dinner",
     meals: [
-      { time: "Wake-up", name: "Wake-up ritual", detail: "Pantop 40 → wait 30 min → warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
+      { time: "Wake-up", name: "Wake-up ritual", detail: "Warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
       { time: "9:00 AM · Breakfast", name: "Breakfast A — Pintola oats bowl", detail: "1 serving Pintola oats · 200ml low-fat milk · 1 tsp mixed seeds · 1 tsp peanut butter · 1 fruit", kcal: "~420" },
       { time: "12:00 PM · Mid-morning", name: "Sprouts chaat + chaas", detail: "1 cup mixed sprouts (moong + chana) · lemon + chaat masala · 1 glass chaas", kcal: "~160" },
       { time: "1:30 PM · Lunch", name: "Chicken curry + brown rice", detail: "SALAD FIRST · 120g chicken curry (home, less oil) · 1 katori brown rice · 1 bowl sabzi · 1 bowl curd", kcal: "~560" },
@@ -730,7 +825,7 @@ const DAYS = [
     note: "Pineapple snack = bromelain for eosinophils. Fish dinner = second omega-3 dose.",
     summary: "Prawn masala lunch · Grilled fish dinner",
     meals: [
-      { time: "Wake-up", name: "Wake-up ritual", detail: "Pantop 40 → wait 30 min → warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
+      { time: "Wake-up", name: "Wake-up ritual", detail: "Warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
       { time: "9:00 AM · Breakfast", name: "Breakfast B — Omelette + avocado", detail: "3 whole eggs (onion + capsicum + spinach, ½ tsp olive oil) · 1 multigrain toast · ½ avocado mashed", kcal: "~460" },
       { time: "12:00 PM · Mid-morning", name: "Fruit + nuts", detail: "1 apple or guava · 5 walnuts + 5 almonds", kcal: "~180" },
       { time: "1:30 PM · Lunch", name: "Prawn masala + brown rice", detail: "SALAD FIRST · 100–120g prawns (mustard base masala) · 1 katori brown rice · 1 bowl sabzi · 1 bowl curd", kcal: "~520" },
@@ -744,7 +839,7 @@ const DAYS = [
     note: "Mutton ONCE a week max — 100g only, lean cuts. Third fish serving at dinner.",
     summary: "Mutton curry lunch · Hilsa/rohu dinner",
     meals: [
-      { time: "Wake-up", name: "Wake-up ritual", detail: "Pantop 40 → wait 30 min → warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
+      { time: "Wake-up", name: "Wake-up ritual", detail: "Warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
       { time: "9:00 AM · Breakfast", name: "Breakfast A — Pintola oats bowl", detail: "1 serving Pintola oats · 200ml low-fat milk · 1 tsp mixed seeds · 1 tsp peanut butter · 1 fruit", kcal: "~420" },
       { time: "12:00 PM · Mid-morning", name: "Boiled eggs + chaas", detail: "2 whole boiled eggs · 1 glass chaas", kcal: "~160" },
       { time: "1:30 PM · Lunch", name: "Mutton curry + rotis (once/week)", detail: "SALAD FIRST · 100g ONLY lean mutton curry · 2 rotis · 1 bowl sabzi · 1 bowl curd", kcal: "~580" },
@@ -758,7 +853,7 @@ const DAYS = [
     note: "Third avocado day of the week. Hits 3x/week HDL target exactly.",
     summary: "Egg curry lunch · Grilled chicken dinner",
     meals: [
-      { time: "Wake-up", name: "Wake-up ritual", detail: "Pantop 40 → wait 30 min → warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
+      { time: "Wake-up", name: "Wake-up ritual", detail: "Warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
       { time: "9:00 AM · Breakfast", name: "Breakfast B — Omelette + avocado", detail: "3 whole eggs (onion + capsicum + spinach, ½ tsp olive oil) · 1 multigrain toast · ½ avocado mashed", kcal: "~460" },
       { time: "12:00 PM · Mid-morning", name: "PB apple", detail: "1 apple sliced + 1 tbsp peanut butter", kcal: "~180" },
       { time: "1:30 PM · Lunch", name: "Egg curry + brown rice", detail: "SALAD FIRST · 3 whole eggs in home curry · 1 katori brown rice · 1 bowl sabzi · 1 bowl curd", kcal: "~500" },
@@ -772,7 +867,7 @@ const DAYS = [
     note: "ONE plate only, no seconds. Dinner is always khichdi — non-negotiable gut reset.",
     summary: "Cheat lunch · Moong dal khichdi dinner",
     meals: [
-      { time: "Wake-up", name: "Wake-up ritual", detail: "Pantop 40 → wait 30 min → warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
+      { time: "Wake-up", name: "Wake-up ritual", detail: "Warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
       { time: "9:00 AM · Breakfast", name: "Breakfast A — Pintola oats bowl", detail: "1 serving Pintola oats · 200ml low-fat milk · 1 tsp mixed seeds · 1 tsp peanut butter · 1 fruit", kcal: "~420" },
       { time: "12:00 PM · Mid-morning", name: "1 fruit only — light", detail: "1 guava or papaya · save appetite for cheat lunch", kcal: "~80" },
       { time: "1:30 PM · Lunch", name: "CHEAT LUNCH — your craving", detail: "Biryani / mutton / pizza / anything · 1 full plate ONLY · water only · 15-min walk after eating mandatory", kcal: "~800–900" },
@@ -853,19 +948,20 @@ const GROCERY = [
   }
 ];
 
-/* =================================================================
-   APP LOGIC
-   ================================================================= */
-
-const STORAGE_KEY = "pravanjan-diet-v1";
+const STORAGE_KEY = "pravanjan-diet-v2";
 const state = {
   view: "today",
   selectedDay: null,
   theme: "light",
-  grocery: {}
+  grocery: {},
+  tracker: { date: "", checks: {} }
 };
 
-// Storage helpers (memory-only fallback if localStorage blocked)
+function todayDateStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+
 function loadState() {
   try {
     const s = localStorage.getItem(STORAGE_KEY);
@@ -873,12 +969,21 @@ function loadState() {
       const parsed = JSON.parse(s);
       state.theme = parsed.theme || "light";
       state.grocery = parsed.grocery || {};
+      state.tracker = parsed.tracker || { date: "", checks: {} };
     }
   } catch(e) {}
+  if (state.tracker.date !== todayDateStr()) {
+    state.tracker = { date: todayDateStr(), checks: {} };
+    saveState();
+  }
 }
 function saveState() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ theme: state.theme, grocery: state.grocery }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      theme: state.theme,
+      grocery: state.grocery,
+      tracker: state.tracker
+    }));
   } catch(e) {}
 }
 
@@ -891,7 +996,12 @@ function formatDate() {
   return new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 }
 
-/* ---------- RENDER TODAY ---------- */
+function isChecked(id) { return !!state.tracker.checks[id]; }
+function toggleCheck(id) {
+  state.tracker.checks[id] = !state.tracker.checks[id];
+  saveState();
+}
+
 function renderDaySelector() {
   const el = document.getElementById("daySelector");
   el.innerHTML = DAYS.map(d =>
@@ -925,7 +1035,6 @@ function renderToday() {
   renderDaySelector();
 }
 
-/* ---------- RENDER WEEK ---------- */
 function renderWeek() {
   const today = todayKey();
   document.getElementById("weekContainer").innerHTML = DAYS.map(d => `
@@ -949,24 +1058,51 @@ function renderWeek() {
   });
 }
 
-/* ---------- RENDER RULES ---------- */
+function updateTrackerScore() {
+  const all = [...WAKE_RITUAL.map(r => r.id), ...DAILY_NON_NEGOTIABLES.map(n => n.id)];
+  const done = all.filter(id => isChecked(id)).length;
+  document.getElementById("trackerScore").textContent = `${done} / ${all.length}`;
+
+  const ritualDone = WAKE_RITUAL.filter(r => isChecked(r.id)).length;
+  document.getElementById("ritualProgress").textContent = `${ritualDone} / ${WAKE_RITUAL.length}`;
+
+  const nnDone = DAILY_NON_NEGOTIABLES.filter(n => isChecked(n.id)).length;
+  document.getElementById("nnProgress").textContent = `${nnDone} / ${DAILY_NON_NEGOTIABLES.length}`;
+}
+
 function renderRules() {
-  document.getElementById("ritualCard").innerHTML = WAKE_RITUAL.map(r => `
-    <div class="ritual-step">
-      <div class="ritual-num">${r.step}</div>
-      <div class="ritual-content">
-        <div class="ritual-name">${r.name}</div>
-        <div class="ritual-detail">${r.detail}</div>
+  document.getElementById("trackerDate").textContent = `Today · ${formatDate()}`;
+
+  document.getElementById("ritualList").innerHTML = WAKE_RITUAL.map(r => `
+    <div class="trackable ${isChecked(r.id) ? 'done' : ''}" data-id="${r.id}">
+      <div class="trackable-check"></div>
+      <div class="trackable-num">${r.step}</div>
+      <div class="trackable-content">
+        <div class="trackable-name">${r.name}</div>
+        <div class="trackable-detail">${r.detail}</div>
       </div>
     </div>
   `).join("");
 
   document.getElementById("nonNegotiables").innerHTML = DAILY_NON_NEGOTIABLES.map(n => `
-    <div class="rule-card good">
-      <div class="rule-title">${n.name} <span style="color:var(--ink-mute); font-size:12px; font-family:inherit; font-style:italic;"> · ${n.when}</span></div>
-      <div class="rule-why">${n.why}</div>
+    <div class="trackable ${isChecked(n.id) ? 'done' : ''}" data-id="${n.id}">
+      <div class="trackable-check"></div>
+      <div class="trackable-content">
+        <div class="trackable-name">${n.name}</div>
+        <div class="trackable-detail">${n.why}</div>
+        <div class="trackable-when">${n.when}</div>
+      </div>
     </div>
   `).join("");
+
+  document.querySelectorAll(".trackable").forEach(el => {
+    el.addEventListener("click", () => {
+      const id = el.dataset.id;
+      toggleCheck(id);
+      el.classList.toggle("done");
+      updateTrackerScore();
+    });
+  });
 
   document.getElementById("issuesList").innerHTML = ISSUES.map(i => `
     <div class="issue-card">
@@ -989,9 +1125,10 @@ function renderRules() {
       <div class="rule-why">${f.why}</div>
     </div>
   `).join("");
+
+  updateTrackerScore();
 }
 
-/* ---------- RENDER GROCERY ---------- */
 function renderGrocery() {
   document.getElementById("groceryContainer").innerHTML = GROCERY.map((g, gi) => `
     <div class="grocery-group">
@@ -1023,7 +1160,6 @@ function renderGrocery() {
   });
 }
 
-/* ---------- VIEW SWITCHING ---------- */
 function switchView(v) {
   state.view = v;
   document.querySelectorAll(".view").forEach(el => el.classList.remove("active"));
@@ -1045,14 +1181,12 @@ function switchView(v) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-/* ---------- THEME ---------- */
 function applyTheme() {
   document.documentElement.setAttribute("data-theme", state.theme);
   document.getElementById("themeToggle").textContent = state.theme === "dark" ? "☀" : "◐";
   document.querySelector('meta[name="theme-color"]').setAttribute("content", state.theme === "dark" ? "#1a1815" : "#faf7f2");
 }
 
-/* ---------- INIT ---------- */
 loadState();
 state.selectedDay = todayKey();
 applyTheme();
@@ -1073,6 +1207,14 @@ document.getElementById("resetGrocery").addEventListener("click", () => {
     state.grocery = {};
     saveState();
     renderGrocery();
+  }
+});
+
+document.getElementById("resetTracker").addEventListener("click", () => {
+  if (confirm("Reset today's checks?")) {
+    state.tracker = { date: todayDateStr(), checks: {} };
+    saveState();
+    renderRules();
   }
 });
 
