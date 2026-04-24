@@ -1,1 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Diet" />
+<meta name="theme-color" content="#1a1a1a" />
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%231a1a1a'/><text x='90' y='118' font-family='Georgia,serif' font-size='90' font-weight='400' fill='%23d4a574' text-anchor='middle' font-style='italic'>P</text></svg>" />
+<title>Diet Plan — Pravanjan</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
+  :root {
+    --bg: #faf7f2;
+    --bg-elev: #ffffff;
+    --ink: #1a1a1a;
+    --ink-soft: #555;
+    --ink-mute: #8a8a8a;
+    --line: #e8e3da;
+    --accent: #b8895c;
+    --accent-soft: #f4ebe0;
+    --danger: #b84a4a;
+    --success: #4a7c4a;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03);
+  }
+
+  [data-theme="dark"] {
+    --bg: #1a1815;
+    --bg-elev: #252320;
+    --ink: #f0ebe0;
+    --ink-soft: #b8b0a0;
+    --ink-mute: #787368;
+    --line: #3a362f;
+    --accent: #d4a574;
+    --accent-soft: #302820;
+    --danger: #e07878;
+    --success: #7ca67c;
+    --shadow: 0 1px 3px rgba(0,0,0,0.2), 0 4px 16px rgba(0,0,0,0.15);
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    font-size: 16px;
+  }
+
+  body {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) calc(72px + env(safe-area-inset-bottom)) env(safe-area-inset-left);
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  /* ---------- HEADER ---------- */
+  header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
+  }
+
+  .brand {
+    font-family: Georgia, "Times New Roman", serif;
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+  }
+
+  .theme-toggle {
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .theme-toggle:active { transform: scale(0.92); }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+  h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-top: 4px;
+  }
+
+  .subtitle {
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin-top: 6px;
+  }
+
+  .stats {
+    display: flex;
+    gap: 16px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    font-size: 12px;
+    color: var(--ink-mute);
+    letter-spacing: 0.03em;
+  }
+  .stat strong {
+    color: var(--ink);
+    font-weight: 600;
+    font-family: Georgia, serif;
+    font-size: 14px;
+  }
+
+  /* ---------- TABS ---------- */
+  nav.tabs {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-elev);
+    border-top: 1px solid var(--line);
+    display: flex;
+    z-index: 20;
+    padding-bottom: env(safe-area-inset-bottom);
+    box-shadow: 0 -2px 20px rgba(0,0,0,0.04);
+  }
+  .tab {
+    flex: 1;
+    padding: 14px 4px 12px;
+    background: none;
+    border: none;
+    color: var(--ink-mute);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.2s;
+    position: relative;
+    font-family: inherit;
+  }
+  .tab-icon {
+    display: block;
+    font-size: 20px;
+    margin-bottom: 2px;
+    font-style: normal;
+  }
+  .tab.active { color: var(--accent); }
+  .tab.active::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 0 0 2px 2px;
+  }
+
+  /* ---------- CONTENT ---------- */
+  main { padding: 20px; max-width: 720px; margin: 0 auto; }
+
+  .view { display: none; animation: fadeIn 0.3s ease; }
+  .view.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------- TODAY VIEW ---------- */
+  .day-banner {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .day-name {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .day-tag {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .day-note {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  .day-selector {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 18px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .day-selector::-webkit-scrollbar { display: none; }
+  .day-pill {
+    flex-shrink: 0;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    padding: 8px 14px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-family: inherit;
+  }
+  .day-pill.active {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+
+  .meal {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  .meal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    gap: 8px;
+  }
+  .meal-time {
+    font-family: Georgia, serif;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .meal-kcal {
+    font-size: 11px;
+    color: var(--ink-mute);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
+  }
+  .meal-name {
+    font-family: Georgia, serif;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .meal-detail {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  .section-title {
+    font-family: Georgia, serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 28px 0 12px;
+    font-weight: 600;
+  }
+  .section-title:first-child { margin-top: 0; }
+
+  /* ---------- WEEK VIEW ---------- */
+  .week-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .week-card:active { transform: scale(0.99); }
+  .week-card.today { border-color: var(--accent); }
+  .week-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .week-day {
+    font-family: Georgia, serif;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+  .week-kcal {
+    font-size: 11px;
+    color: var(--ink-mute);
+    font-variant-numeric: tabular-nums;
+  }
+  .week-tag {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 100px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+    margin-left: 8px;
+  }
+  .week-meals {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- RULES VIEW ---------- */
+  .rule-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+  }
+  .rule-card.bad {
+    border-left: 3px solid var(--danger);
+  }
+  .rule-card.good {
+    border-left: 3px solid var(--success);
+  }
+  .rule-title {
+    font-family: Georgia, serif;
+    font-size: 15px;
+    margin-bottom: 4px;
+    letter-spacing: -0.005em;
+  }
+  .rule-why {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  .ritual-step {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .ritual-step:last-child { border-bottom: none; }
+  .ritual-num {
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--accent);
+    min-width: 26px;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .ritual-content { flex: 1; }
+  .ritual-name {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  .ritual-detail {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .issue-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+  }
+  .issue-name {
+    font-family: Georgia, serif;
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+  .issue-values {
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin-bottom: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+  .issue-fix {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  /* ---------- GROCERY VIEW ---------- */
+  .grocery-group {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  .grocery-group h3 {
+    font-family: Georgia, serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .grocery-meta {
+    font-size: 11px;
+    color: var(--ink-mute);
+    margin-bottom: 14px;
+    font-style: italic;
+  }
+  .grocery-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+    gap: 12px;
+  }
+  .grocery-item:last-child { border-bottom: none; }
+  .check {
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--line);
+    border-radius: 6px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    background: transparent;
+  }
+  .grocery-item.checked .check {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .grocery-item.checked .check::after {
+    content: "✓";
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .grocery-item.checked .grocery-name,
+  .grocery-item.checked .grocery-qty {
+    text-decoration: line-through;
+    color: var(--ink-mute);
+  }
+  .grocery-text { flex: 1; min-width: 0; }
+  .grocery-name {
+    font-size: 14px;
+    color: var(--ink);
+    transition: color 0.15s;
+  }
+  .grocery-qty {
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin-top: 2px;
+    transition: color 0.15s;
+  }
+
+  .reset-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 14px;
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    border-radius: 12px;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .reset-btn:active { transform: scale(0.98); }
+  .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  footer {
+    padding: 32px 20px 20px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+    font-style: italic;
+    font-family: Georgia, serif;
+  }
+
+  @media (min-width: 640px) {
+    h1 { font-size: 38px; }
+    main { padding: 28px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <span class="brand">Pravanjan · Weekly Plan</span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">◐</button>
+  </div>
+  <h1 id="greeting">Today's plan</h1>
+  <div class="subtitle" id="dateLine">—</div>
+  <div class="stats">
+    <span class="stat">Target <strong>70kg</strong></span>
+    <span class="stat">Daily <strong>~1880 kcal</strong></span>
+    <span class="stat">Protein <strong>~160g</strong></span>
+  </div>
+</header>
+
+<main>
+
+  <!-- ========== TODAY VIEW ========== -->
+  <section class="view active" id="view-today">
+    <div class="day-selector" id="daySelector"></div>
+    <div class="day-banner">
+      <div>
+        <div class="day-name" id="dayName">—</div>
+        <div class="day-note" id="dayNote">—</div>
+      </div>
+      <span class="day-tag" id="dayTag">—</span>
+    </div>
+    <div id="mealsContainer"></div>
+  </section>
+
+  <!-- ========== WEEK VIEW ========== -->
+  <section class="view" id="view-week">
+    <div class="section-title">Weekly Overview</div>
+    <div id="weekContainer"></div>
+  </section>
+
+  <!-- ========== RULES VIEW ========== -->
+  <section class="view" id="view-rules">
+    <div class="section-title">Wake-up Ritual</div>
+    <div class="rule-card" id="ritualCard"></div>
+
+    <div class="section-title">Daily Non-Negotiables</div>
+    <div id="nonNegotiables"></div>
+
+    <div class="section-title">Blood Report — What This Fixes</div>
+    <div id="issuesList"></div>
+
+    <div class="section-title">Always Eat</div>
+    <div id="alwaysEat"></div>
+
+    <div class="section-title">Never Eat</div>
+    <div id="neverEat"></div>
+  </section>
+
+  <!-- ========== GROCERY VIEW ========== -->
+  <section class="view" id="view-grocery">
+    <div class="section-title">Sunday Grocery Run</div>
+    <div id="groceryContainer"></div>
+    <button class="reset-btn" id="resetGrocery">Reset checklist for new week</button>
+  </section>
+
+</main>
+
+<nav class="tabs">
+  <button class="tab active" data-view="today"><span class="tab-icon">◉</span>Today</button>
+  <button class="tab" data-view="week"><span class="tab-icon">☷</span>Week</button>
+  <button class="tab" data-view="rules"><span class="tab-icon">☰</span>Rules</button>
+  <button class="tab" data-view="grocery"><span class="tab-icon">✓</span>Grocery</button>
+</nav>
+
+<footer>— 3L water daily · dinner by 8pm · no afternoon sleep —</footer>
+
+<script>
+/* =================================================================
+   DATA — edit this section to modify the plan
+   ================================================================= */
+
+const DAILY_NON_NEGOTIABLES = [
+  { name: "5 walnuts", when: "Every morning with almonds", why: "Raises HDL — your #1 priority" },
+  { name: "8–10 soaked almonds", when: "Every morning (soak night before)", why: "Brain health, magnesium, Vit E" },
+  { name: "1 tsp flaxseeds", when: "In oats or smoothie or curd", why: "Omega-3, fibre — anti-inflammatory" },
+  { name: "2 eggs minimum", when: "Breakfast or snack or dinner", why: "Protein + Vit D — eat whole eggs" },
+  { name: "1 bowl curd", when: "With every lunch AND dinner", why: "Gut health, probiotics" },
+  { name: "2 sq dark chocolate 70%+", when: "Every evening snack", why: "Magnesium for anxiety, HDL boost" },
+  { name: "3L water", when: "Throughout the day", why: "Digestion, metabolism, kidney health" },
+  { name: "20 min morning sunlight", when: "After wake-up ritual", why: "Vit D, circadian rhythm, mood" },
+  { name: "Dinner by 8pm", when: "Every day without exception", why: "Biggest fat loss accelerator" },
+  { name: "Salad before every lunch", when: "Cucumber + tomato + onion", why: "Controls portion, adds fibre" }
+];
+
+const WAKE_RITUAL = [
+  { step: 1, name: "Pantop 40 (if on course)", detail: "With 1 glass plain water only. Wait 30 min before anything acidic." },
+  { step: 2, name: "Warm water + lemon", detail: "1 glass warm water + juice of ½ lemon." },
+  { step: 3, name: "Almonds + walnuts", detail: "8–10 soaked almonds + 5 raw walnuts." },
+  { step: 4, name: "20 min sunlight", detail: "Stand or sit outside. Sets circadian rhythm." },
+  { step: 5, name: "Breakfast", detail: "Template A or B depending on day. Eat slowly, no phone." }
+];
+
+const ISSUES = [
+  { name: "HDL Cholesterol — LOW", values: "Current 34 mg/dL · Target >60", fix: "Walnuts daily + avocado (Tue/Thu/Sat) + fish 3x/week + flaxseeds. Takes 3–6 months." },
+  { name: "Non-HDL — HIGH", values: "Current 152 mg/dL · Target <130", fix: "Zero fried food, zero biscuits, zero namkeen, zero sugar tea. Drops 10–15 points in 8 weeks." },
+  { name: "Vitamin D — DEFICIENT", values: "Current 12.4 ng/mL · Target >30", fix: "Retest now. Maintenance dose per doctor + 20 min sunlight + eggs + fish." },
+  { name: "Eosinophils — HIGH", values: "Current 588 /uL · Target <500", fix: "Pineapple/papaya daily (bromelain), zero processed food. Normalises in 3–4 months." },
+  { name: "Blood Sugar — PERFECT", values: "Current 87 mg/dL · HbA1c 5.3%", fix: "Protect at all costs. No sugar in tea, no biscuits, no cold drinks." },
+  { name: "Gas / Acidity", values: "Active issue", fix: "Pantop 40 first, wait 30 min, then lemon water. Hing + jeera in dal. Skip raw onion temporarily." }
+];
+
+const ALWAYS_EAT = [
+  { food: "Walnuts (5/day)", why: "Every morning — raises HDL. Non-negotiable." },
+  { food: "Soaked almonds (8–10/day)", why: "Soak every night. Brain, Vit E, magnesium." },
+  { food: "Eggs (2+ daily)", why: "Whole eggs always. Protein + Vit D." },
+  { food: "Curd every lunch + dinner", why: "Gut health. Probiotics. Reduces gas over time." },
+  { food: "Hilsa or rohu fish (3x/week)", why: "Tue lunch + Thu dinner + Fri dinner. Omega-3." },
+  { food: "Avocado (Tue/Thu/Sat)", why: "Breakfast B days. Clinically proven HDL booster." },
+  { food: "Flaxseeds (1 tsp/day)", why: "In oats or curd daily. Omega-3 + fibre." },
+  { food: "Pineapple or papaya (5–6x/week)", why: "Bromelain reduces elevated eosinophils." },
+  { food: "Dark chocolate 70%+ (2 sq/day)", why: "Every evening. Magnesium + HDL benefit." },
+  { food: "Chaas / buttermilk (daily)", why: "Mid-morning. Gut healing, probiotics." },
+  { food: "Green tea (1–2 cups/day)", why: "Replaces sugar tea. Antioxidants + metabolism." },
+  { food: "Mustard or olive oil", why: "Replace refined oil. Never reuse oil." }
+];
+
+const NEVER_EAT = [
+  { food: "Namkeen / bhujia / chips", why: "Direct LDL raiser. Worsened cholesterol during MBA." },
+  { food: "Biscuits / cookies", why: "Refined flour + sugar + trans fat. Remove completely." },
+  { food: "Sugar in tea or coffee", why: "Zero sugar. Switch to green tea." },
+  { food: "Cold drinks / packaged juices", why: "Pure sugar. Destroys your blood sugar reading." },
+  { food: "Maida — white bread, naan", why: "Replace with whole wheat always." },
+  { food: "Deep fried — pakoda, samosa", why: "Trans fats raise LDL, lower HDL." },
+  { food: "Full-cream milk or cream", why: "Saturated fat raises non-HDL. Use toned milk." },
+  { food: "Reused cooking oil", why: "Carcinogenic at high heat. Never reuse." },
+  { food: "Cold drinks/milk in winter", why: "Your DNS cold allergy. Room temp in winter." },
+  { food: "Sprouts when gas is bad", why: "Replace with roasted chana during Pantop course." },
+  { food: "Raw onion in salad (temp)", why: "Worsens gas. Use cooked onion till gut heals." }
+];
+
+const DAYS = [
+  {
+    key: "mon", name: "Monday", type: "VEG DAY", kcal: "~1870 kcal",
+    note: "Full veg. Rajma protein = comparable to meat. Add hing + jeera to dal.",
+    summary: "Rajma/chana lunch · Paneer tikka + moong dal dinner",
+    meals: [
+      { time: "Wake-up", name: "Wake-up ritual", detail: "Pantop 40 → wait 30 min → warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
+      { time: "9:00 AM · Breakfast", name: "Breakfast A — Pintola oats bowl", detail: "1 serving Pintola high-protein oats · 200ml low-fat milk · 1 tsp mixed seeds · 1 tsp peanut butter · 1 fruit", kcal: "~420" },
+      { time: "12:00 PM · Mid-morning", name: "Roasted chana + chaas", detail: "30g roasted chana · 1 glass chaas (low-fat curd + water + jeera)", kcal: "~150" },
+      { time: "1:30 PM · Lunch", name: "Rajma/chana curry + brown rice", detail: "SALAD FIRST · 1 bowl rajma or chana curry · 1 katori brown rice · 1 bowl sabzi · 1 bowl curd", kcal: "~490" },
+      { time: "4:00 PM · Snack", name: "Makhana + green tea + dark choc", detail: "1 cup roasted makhana · 1 cup green tea (no sugar) · 2 squares dark chocolate 70%+", kcal: "~170" },
+      { time: "8:00 PM · Dinner", name: "Moong dal + paneer tikka + rotis", detail: "100g low-fat paneer tikka (grilled) · 2 whole wheat rotis · 1 bowl moong dal · 1 bowl curd", kcal: "~420" },
+      { time: "10:30 PM · Bedtime", name: "Turmeric milk", detail: "200ml low-fat milk + ½ tsp haldi (alternate with chamomile tea)", kcal: "~80" }
+    ]
+  },
+  {
+    key: "tue", name: "Tuesday", type: "FISH + AVOCADO", kcal: "~1900 kcal",
+    note: "Fish lunch = omega-3 for HDL. Hilsa is best. Avocado at breakfast = HDL booster.",
+    summary: "Hilsa/rohu curry lunch · Grilled chicken dinner",
+    meals: [
+      { time: "Wake-up", name: "Wake-up ritual", detail: "Pantop 40 → wait 30 min → warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
+      { time: "9:00 AM · Breakfast", name: "Breakfast B — Omelette + avocado", detail: "3 whole eggs (onion + capsicum + spinach, ½ tsp olive oil) · 1 multigrain toast · ½ avocado mashed (lemon + black pepper)", kcal: "~460" },
+      { time: "12:00 PM · Mid-morning", name: "Boiled eggs + black coffee", detail: "2 whole boiled eggs (pre-boiled) · 1 cup black coffee, no sugar", kcal: "~160" },
+      { time: "1:30 PM · Lunch", name: "Hilsa/rohu fish curry + rotis", detail: "SALAD FIRST · 120–150g hilsa or rohu fish curry (light oil) · 2 whole wheat rotis · 1 bowl sabzi · 1 bowl curd", kcal: "~530" },
+      { time: "4:00 PM · Snack", name: "PB apple + dark choc", detail: "1 apple sliced + 1 tbsp peanut butter · 2 squares dark choc · 1 cup green tea", kcal: "~230" },
+      { time: "8:00 PM · Dinner", name: "Grilled chicken + spinach sabzi + rotis", detail: "120g chicken breast (grilled, lemon + garlic + chilli) · 2 rotis · 1 bowl spinach sabzi · 1 bowl curd", kcal: "~450" },
+      { time: "10:30 PM · Bedtime", name: "Chamomile tea", detail: "1 cup chamomile (alternate with turmeric milk)", kcal: "~5" }
+    ]
+  },
+  {
+    key: "wed", name: "Wednesday", type: "NON-VEG", kcal: "~1870 kcal",
+    note: "Sprouts are anti-inflammatory — good for eosinophils. Swap for roasted chana if gas.",
+    summary: "Chicken curry lunch · Egg bhurji dinner",
+    meals: [
+      { time: "Wake-up", name: "Wake-up ritual", detail: "Pantop 40 → wait 30 min → warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
+      { time: "9:00 AM · Breakfast", name: "Breakfast A — Pintola oats bowl", detail: "1 serving Pintola oats · 200ml low-fat milk · 1 tsp mixed seeds · 1 tsp peanut butter · 1 fruit", kcal: "~420" },
+      { time: "12:00 PM · Mid-morning", name: "Sprouts chaat + chaas", detail: "1 cup mixed sprouts (moong + chana) · lemon + chaat masala · 1 glass chaas", kcal: "~160" },
+      { time: "1:30 PM · Lunch", name: "Chicken curry + brown rice", detail: "SALAD FIRST · 120g chicken curry (home, less oil) · 1 katori brown rice · 1 bowl sabzi · 1 bowl curd", kcal: "~560" },
+      { time: "4:00 PM · Snack", name: "Mixed nuts + dark choc + coffee", detail: "5 walnuts + 6 almonds · 2 squares dark choc · 1 cup black coffee or green tea", kcal: "~200" },
+      { time: "8:00 PM · Dinner", name: "Egg bhurji + rotis", detail: "3 whole eggs scrambled (onion + tomato + chilli, ½ tsp oil) · 2 rotis · 1 bowl curd", kcal: "~390" },
+      { time: "10:30 PM · Bedtime", name: "Turmeric milk", detail: "200ml low-fat milk + ½ tsp haldi", kcal: "~80" }
+    ]
+  },
+  {
+    key: "thu", name: "Thursday", type: "FISH + AVOCADO", kcal: "~1900 kcal",
+    note: "Pineapple snack = bromelain for eosinophils. Fish dinner = second omega-3 dose.",
+    summary: "Prawn masala lunch · Grilled fish dinner",
+    meals: [
+      { time: "Wake-up", name: "Wake-up ritual", detail: "Pantop 40 → wait 30 min → warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
+      { time: "9:00 AM · Breakfast", name: "Breakfast B — Omelette + avocado", detail: "3 whole eggs (onion + capsicum + spinach, ½ tsp olive oil) · 1 multigrain toast · ½ avocado mashed", kcal: "~460" },
+      { time: "12:00 PM · Mid-morning", name: "Fruit + nuts", detail: "1 apple or guava · 5 walnuts + 5 almonds", kcal: "~180" },
+      { time: "1:30 PM · Lunch", name: "Prawn masala + brown rice", detail: "SALAD FIRST · 100–120g prawns (mustard base masala) · 1 katori brown rice · 1 bowl sabzi · 1 bowl curd", kcal: "~520" },
+      { time: "4:00 PM · Snack", name: "Pineapple/watermelon + dark choc", detail: "2 cups pineapple or watermelon · black salt + lemon · 2 squares dark choc", kcal: "~130" },
+      { time: "8:00 PM · Dinner", name: "Grilled fish + green sabzi + rotis", detail: "120g any fish (grilled or light curry) · 2 rotis · 1 bowl green sabzi · 1 bowl curd", kcal: "~430" },
+      { time: "10:30 PM · Bedtime", name: "Chamomile tea", detail: "1 cup chamomile", kcal: "~5" }
+    ]
+  },
+  {
+    key: "fri", name: "Friday", type: "FISH + MUTTON", kcal: "~1900 kcal",
+    note: "Mutton ONCE a week max — 100g only, lean cuts. Third fish serving at dinner.",
+    summary: "Mutton curry lunch · Hilsa/rohu dinner",
+    meals: [
+      { time: "Wake-up", name: "Wake-up ritual", detail: "Pantop 40 → wait 30 min → warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
+      { time: "9:00 AM · Breakfast", name: "Breakfast A — Pintola oats bowl", detail: "1 serving Pintola oats · 200ml low-fat milk · 1 tsp mixed seeds · 1 tsp peanut butter · 1 fruit", kcal: "~420" },
+      { time: "12:00 PM · Mid-morning", name: "Boiled eggs + chaas", detail: "2 whole boiled eggs · 1 glass chaas", kcal: "~160" },
+      { time: "1:30 PM · Lunch", name: "Mutton curry + rotis (once/week)", detail: "SALAD FIRST · 100g ONLY lean mutton curry · 2 rotis · 1 bowl sabzi · 1 bowl curd", kcal: "~580" },
+      { time: "4:00 PM · Snack", name: "Makhana + dark choc + coffee", detail: "1 cup roasted makhana · 2 squares dark choc · 1 cup black coffee", kcal: "~170" },
+      { time: "8:00 PM · Dinner", name: "Hilsa/rohu fish curry + rotis", detail: "120g hilsa or rohu (light curry or grilled) · 2 rotis · 1 bowl sabzi · 1 bowl curd", kcal: "~430" },
+      { time: "10:30 PM · Bedtime", name: "Turmeric milk", detail: "200ml low-fat milk + ½ tsp haldi", kcal: "~80" }
+    ]
+  },
+  {
+    key: "sat", name: "Saturday", type: "AVOCADO DAY", kcal: "~1890 kcal",
+    note: "Third avocado day of the week. Hits 3x/week HDL target exactly.",
+    summary: "Egg curry lunch · Grilled chicken dinner",
+    meals: [
+      { time: "Wake-up", name: "Wake-up ritual", detail: "Pantop 40 → wait 30 min → warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
+      { time: "9:00 AM · Breakfast", name: "Breakfast B — Omelette + avocado", detail: "3 whole eggs (onion + capsicum + spinach, ½ tsp olive oil) · 1 multigrain toast · ½ avocado mashed", kcal: "~460" },
+      { time: "12:00 PM · Mid-morning", name: "PB apple", detail: "1 apple sliced + 1 tbsp peanut butter", kcal: "~180" },
+      { time: "1:30 PM · Lunch", name: "Egg curry + brown rice", detail: "SALAD FIRST · 3 whole eggs in home curry · 1 katori brown rice · 1 bowl sabzi · 1 bowl curd", kcal: "~500" },
+      { time: "4:00 PM · Snack", name: "Makhana + dark choc + coffee", detail: "1 cup roasted makhana · 2 squares dark choc · 1 cup black coffee", kcal: "~170" },
+      { time: "8:00 PM · Dinner", name: "Grilled chicken + seasonal sabzi + rotis", detail: "120g chicken breast (grilled) · 2 rotis · 1 bowl seasonal sabzi · 1 bowl curd", kcal: "~450" },
+      { time: "10:30 PM · Bedtime", name: "Chamomile tea", detail: "1 cup chamomile", kcal: "~5" }
+    ]
+  },
+  {
+    key: "sun", name: "Sunday", type: "CHEAT DAY", kcal: "~1750 kcal",
+    note: "ONE plate only, no seconds. Dinner is always khichdi — non-negotiable gut reset.",
+    summary: "Cheat lunch · Moong dal khichdi dinner",
+    meals: [
+      { time: "Wake-up", name: "Wake-up ritual", detail: "Pantop 40 → wait 30 min → warm water + lemon → 8 almonds + 5 walnuts → 20 min sunlight", kcal: "~80" },
+      { time: "9:00 AM · Breakfast", name: "Breakfast A — Pintola oats bowl", detail: "1 serving Pintola oats · 200ml low-fat milk · 1 tsp mixed seeds · 1 tsp peanut butter · 1 fruit", kcal: "~420" },
+      { time: "12:00 PM · Mid-morning", name: "1 fruit only — light", detail: "1 guava or papaya · save appetite for cheat lunch", kcal: "~80" },
+      { time: "1:30 PM · Lunch", name: "CHEAT LUNCH — your craving", detail: "Biryani / mutton / pizza / anything · 1 full plate ONLY · water only · 15-min walk after eating mandatory", kcal: "~800–900" },
+      { time: "4:00 PM · Snack", name: "Dark choc + green tea — light", detail: "2 squares dark choc · 1 cup green tea · gut is recovering — nothing heavy", kcal: "~55" },
+      { time: "8:00 PM · Dinner", name: "Moong dal khichdi — gut reset", detail: "1 bowl khichdi (rice + moong dal + minimal ghee + jeera) · 1 bowl curd · 1 papad", kcal: "~320" },
+      { time: "10:30 PM · Bedtime", name: "Turmeric milk", detail: "200ml low-fat milk + ½ tsp haldi · roast makhana today for the week", kcal: "~80" }
+    ]
+  }
+];
+
+const GROCERY = [
+  {
+    group: "Proteins — Buy Fresh",
+    meta: "Buy every Sunday morning",
+    items: [
+      { name: "Chicken breast skinless", qty: "500–600g", use: "Tue + Sat dinner" },
+      { name: "Eggs", qty: "18 (2 trays)", use: "Breakfast B + snacks + dinners" },
+      { name: "Fish — Hilsa or Rohu", qty: "300–400g fresh", use: "Tue lunch + Thu/Fri dinner" },
+      { name: "Prawns", qty: "150–200g", use: "Thu lunch" },
+      { name: "Low-fat paneer", qty: "100–150g", use: "Monday dinner tikka" },
+      { name: "Mutton lean cuts", qty: "150g", use: "Friday lunch only" }
+    ]
+  },
+  {
+    group: "Dairy — Buy Weekly",
+    meta: "",
+    items: [
+      { name: "Low-fat curd / dahi", qty: "1 kg", use: "Every lunch & dinner" },
+      { name: "Low-fat milk toned", qty: "2 litres", use: "Oats + bedtime turmeric milk" },
+      { name: "Hung curd / Greek yogurt", qty: "150–200g", use: "Optional parfait" }
+    ]
+  },
+  {
+    group: "Produce — Twice a Week (Sun + Wed)",
+    meta: "",
+    items: [
+      { name: "Apple", qty: "7 (1/day)", use: "Breakfast fruit + snacks" },
+      { name: "Guava or papaya", qty: "4–5", use: "Alternate with apple" },
+      { name: "Avocado", qty: "3 ripe", use: "Tue/Thu/Sat Breakfast B" },
+      { name: "Pineapple or watermelon", qty: "1 medium", use: "Thu snack — bromelain" },
+      { name: "Banana", qty: "4–5", use: "Max 1/day morning only" },
+      { name: "Lemon", qty: "6–8", use: "Morning water + salad" },
+      { name: "Cucumber", qty: "5–6", use: "Salad before every lunch" },
+      { name: "Tomatoes", qty: "6–8", use: "Salad + cooking" },
+      { name: "Spinach palak", qty: "250g", use: "Omelette + dinner sabzi" },
+      { name: "Capsicum", qty: "2–3", use: "Breakfast B omelette" },
+      { name: "Onion", qty: "4–5", use: "Salad + cooking" },
+      { name: "Mixed seasonal veg", qty: "500g", use: "Sabzi lunch/dinner" }
+    ]
+  },
+  {
+    group: "Pantry — Restock Monthly",
+    meta: "",
+    items: [
+      { name: "Pintola high-protein oats", qty: "1 pack 500g", use: "Breakfast A base" },
+      { name: "Whole wheat atta", qty: "1 kg", use: "2 rotis per dinner" },
+      { name: "Brown rice", qty: "500g", use: "Mon/Tue/Thu/Sat lunch" },
+      { name: "Moong dal split", qty: "500g", use: "Monday + Sunday khichdi" },
+      { name: "Masoor or toor dal", qty: "500g", use: "Daily dal" },
+      { name: "Rajma or chana dried", qty: "250g", use: "Monday lunch" },
+      { name: "Multigrain bread", qty: "1 loaf", use: "Breakfast B toast" },
+      { name: "Walnuts raw shelled", qty: "150–200g", use: "5/day — critical" },
+      { name: "Almonds raw", qty: "200g", use: "8–10/day soaked" },
+      { name: "Flaxseeds", qty: "100g", use: "1 tsp/day in oats" },
+      { name: "Pintola mixed seeds", qty: "1 pack", use: "1 tsp daily" },
+      { name: "Pintola peanut butter natural", qty: "1 jar", use: "Breakfast + snacks" },
+      { name: "Roasted chana", qty: "300g", use: "Snacks + gas backup" },
+      { name: "Makhana fox nuts", qty: "200g", use: "Roast Sunday" },
+      { name: "Dark chocolate 70%+", qty: "2 bars", use: "2 sq every evening" },
+      { name: "Olive or mustard oil", qty: "500ml", use: "All cooking" },
+      { name: "Ghee pure", qty: "100g", use: "Half tsp for roti" },
+      { name: "Green tea bags", qty: "1 box", use: "1–2 cups daily" },
+      { name: "Chamomile tea bags", qty: "1 box", use: "Alternate bedtime" },
+      { name: "Turmeric powder", qty: "Stock", use: "Bedtime milk" },
+      { name: "Hing asafoetida", qty: "Small bottle", use: "Every dal" },
+      { name: "Jeera cumin seeds", qty: "Stock", use: "Dal + chaas" }
+    ]
+  }
+];
+
+/* =================================================================
+   APP LOGIC
+   ================================================================= */
+
+const STORAGE_KEY = "pravanjan-diet-v1";
+const state = {
+  view: "today",
+  selectedDay: null,
+  theme: "light",
+  grocery: {}
+};
+
+// Storage helpers (memory-only fallback if localStorage blocked)
+function loadState() {
+  try {
+    const s = localStorage.getItem(STORAGE_KEY);
+    if (s) {
+      const parsed = JSON.parse(s);
+      state.theme = parsed.theme || "light";
+      state.grocery = parsed.grocery || {};
+    }
+  } catch(e) {}
+}
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ theme: state.theme, grocery: state.grocery }));
+  } catch(e) {}
+}
+
+function todayKey() {
+  const keys = ["sun","mon","tue","wed","thu","fri","sat"];
+  return keys[new Date().getDay()];
+}
+
+function formatDate() {
+  return new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+}
+
+/* ---------- RENDER TODAY ---------- */
+function renderDaySelector() {
+  const el = document.getElementById("daySelector");
+  el.innerHTML = DAYS.map(d =>
+    `<button class="day-pill ${d.key === state.selectedDay ? 'active' : ''}" data-day="${d.key}">${d.name.slice(0,3)}</button>`
+  ).join("");
+  el.querySelectorAll(".day-pill").forEach(b => {
+    b.addEventListener("click", () => {
+      state.selectedDay = b.dataset.day;
+      renderToday();
+    });
+  });
+}
+
+function renderToday() {
+  const day = DAYS.find(d => d.key === state.selectedDay) || DAYS.find(d => d.key === todayKey());
+  document.getElementById("dayName").textContent = day.name;
+  document.getElementById("dayNote").textContent = day.note;
+  document.getElementById("dayTag").textContent = day.type;
+
+  document.getElementById("mealsContainer").innerHTML = day.meals.map(m => `
+    <div class="meal">
+      <div class="meal-header">
+        <span class="meal-time">${m.time}</span>
+        <span class="meal-kcal">${m.kcal} kcal</span>
+      </div>
+      <div class="meal-name">${m.name}</div>
+      <div class="meal-detail">${m.detail}</div>
+    </div>
+  `).join("");
+
+  renderDaySelector();
+}
+
+/* ---------- RENDER WEEK ---------- */
+function renderWeek() {
+  const today = todayKey();
+  document.getElementById("weekContainer").innerHTML = DAYS.map(d => `
+    <div class="week-card ${d.key === today ? 'today' : ''}" data-day="${d.key}">
+      <div class="week-card-top">
+        <div>
+          <span class="week-day">${d.name}</span>
+          <span class="week-tag">${d.type}</span>
+        </div>
+        <span class="week-kcal">${d.kcal}</span>
+      </div>
+      <div class="week-meals">${d.summary}</div>
+    </div>
+  `).join("");
+
+  document.querySelectorAll(".week-card").forEach(c => {
+    c.addEventListener("click", () => {
+      state.selectedDay = c.dataset.day;
+      switchView("today");
+    });
+  });
+}
+
+/* ---------- RENDER RULES ---------- */
+function renderRules() {
+  document.getElementById("ritualCard").innerHTML = WAKE_RITUAL.map(r => `
+    <div class="ritual-step">
+      <div class="ritual-num">${r.step}</div>
+      <div class="ritual-content">
+        <div class="ritual-name">${r.name}</div>
+        <div class="ritual-detail">${r.detail}</div>
+      </div>
+    </div>
+  `).join("");
+
+  document.getElementById("nonNegotiables").innerHTML = DAILY_NON_NEGOTIABLES.map(n => `
+    <div class="rule-card good">
+      <div class="rule-title">${n.name} <span style="color:var(--ink-mute); font-size:12px; font-family:inherit; font-style:italic;"> · ${n.when}</span></div>
+      <div class="rule-why">${n.why}</div>
+    </div>
+  `).join("");
+
+  document.getElementById("issuesList").innerHTML = ISSUES.map(i => `
+    <div class="issue-card">
+      <div class="issue-name">${i.name}</div>
+      <div class="issue-values">${i.values}</div>
+      <div class="issue-fix">${i.fix}</div>
+    </div>
+  `).join("");
+
+  document.getElementById("alwaysEat").innerHTML = ALWAYS_EAT.map(f => `
+    <div class="rule-card good">
+      <div class="rule-title">${f.food}</div>
+      <div class="rule-why">${f.why}</div>
+    </div>
+  `).join("");
+
+  document.getElementById("neverEat").innerHTML = NEVER_EAT.map(f => `
+    <div class="rule-card bad">
+      <div class="rule-title">${f.food}</div>
+      <div class="rule-why">${f.why}</div>
+    </div>
+  `).join("");
+}
+
+/* ---------- RENDER GROCERY ---------- */
+function renderGrocery() {
+  document.getElementById("groceryContainer").innerHTML = GROCERY.map((g, gi) => `
+    <div class="grocery-group">
+      <h3>${g.group}</h3>
+      ${g.meta ? `<div class="grocery-meta">${g.meta}</div>` : ""}
+      ${g.items.map((item, ii) => {
+        const id = `${gi}-${ii}`;
+        const checked = state.grocery[id] ? "checked" : "";
+        return `
+          <div class="grocery-item ${checked}" data-id="${id}">
+            <div class="check"></div>
+            <div class="grocery-text">
+              <div class="grocery-name">${item.name}</div>
+              <div class="grocery-qty">${item.qty} · ${item.use}</div>
+            </div>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `).join("");
+
+  document.querySelectorAll(".grocery-item").forEach(el => {
+    el.addEventListener("click", () => {
+      const id = el.dataset.id;
+      state.grocery[id] = !state.grocery[id];
+      el.classList.toggle("checked");
+      saveState();
+    });
+  });
+}
+
+/* ---------- VIEW SWITCHING ---------- */
+function switchView(v) {
+  state.view = v;
+  document.querySelectorAll(".view").forEach(el => el.classList.remove("active"));
+  document.getElementById("view-" + v).classList.add("active");
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.view === v));
+
+  const titles = {
+    today: "Today's plan",
+    week: "The week ahead",
+    rules: "Ground rules",
+    grocery: "Grocery list"
+  };
+  document.getElementById("greeting").textContent = titles[v];
+
+  if (v === "today") renderToday();
+  if (v === "week") renderWeek();
+  if (v === "rules") renderRules();
+  if (v === "grocery") renderGrocery();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ---------- THEME ---------- */
+function applyTheme() {
+  document.documentElement.setAttribute("data-theme", state.theme);
+  document.getElementById("themeToggle").textContent = state.theme === "dark" ? "☀" : "◐";
+  document.querySelector('meta[name="theme-color"]').setAttribute("content", state.theme === "dark" ? "#1a1815" : "#faf7f2");
+}
+
+/* ---------- INIT ---------- */
+loadState();
+state.selectedDay = todayKey();
+applyTheme();
+document.getElementById("dateLine").textContent = formatDate();
+
+document.querySelectorAll(".tab").forEach(t => {
+  t.addEventListener("click", () => switchView(t.dataset.view));
+});
+
+document.getElementById("themeToggle").addEventListener("click", () => {
+  state.theme = state.theme === "light" ? "dark" : "light";
+  applyTheme();
+  saveState();
+});
+
+document.getElementById("resetGrocery").addEventListener("click", () => {
+  if (confirm("Reset grocery checklist for a new week?")) {
+    state.grocery = {};
+    saveState();
+    renderGrocery();
+  }
+});
+
+renderToday();
+</script>
+</body>
+</html>
