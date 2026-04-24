@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Masterplan" />
+<meta name="theme-color" content="#0d1117" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%230d1117'/><rect x='44' y='44' width='92' height='92' fill='none' stroke='%2334d399' stroke-width='6'/><rect x='62' y='62' width='56' height='56' fill='%2334d399'/></svg>" />
+<title>Masterplan — Pravanjan</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --bg: #0d1117;
+    --bg-elev: #161b22;
+    --bg-soft: #1c232d;
+    --ink: #e6edf3;
+    --ink-soft: #9ba9b8;
+    --ink-mute: #6b7a8a;
+    --line: #262d37;
+    --line-soft: #1d242e;
+    --accent: #34d399;
+    --accent-soft: #0f2c24;
+    --accent-ink: #6ee7b7;
+    --warn: #f59e0b;
+    --red: #ef4444;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    font-size: 15px;
+  }
+
+  body {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) calc(68px + env(safe-area-inset-bottom)) env(safe-area-inset-left);
+    background-image:
+      radial-gradient(circle at 20% 0%, rgba(52, 211, 153, 0.05), transparent 40%),
+      radial-gradient(circle at 100% 100%, rgba(52, 211, 153, 0.03), transparent 50%);
+    background-attachment: fixed;
+  }
+
+  /* ---------- HEADER ---------- */
+  header {
+    padding: 20px 18px 14px;
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(13, 17, 23, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-right: 6px;
+    box-shadow: 0 0 10px var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  h1 {
+    font-family: var(--sans);
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  h1 .slash {
+    color: var(--accent);
+    font-weight: 400;
+  }
+  .header-sub {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+  }
+  .header-sub .time {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* ---------- PHASE TOGGLE ---------- */
+  .phase-toggle {
+    display: flex;
+    gap: 0;
+    margin-top: 14px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 3px;
+  }
+  .phase-btn {
+    flex: 1;
+    padding: 8px 10px;
+    background: transparent;
+    border: none;
+    color: var(--ink-mute);
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border-radius: 7px;
+    transition: all 0.2s;
+  }
+  .phase-btn.active {
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  .phase-label-full {
+    display: block;
+    font-size: 10px;
+    margin-top: 2px;
+    opacity: 0.7;
+    letter-spacing: 0.03em;
+    text-transform: none;
+  }
+
+  /* ---------- TABS ---------- */
+  nav.tabs {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(13, 17, 23, 0.95);
+    border-top: 1px solid var(--line);
+    display: flex;
+    z-index: 20;
+    padding-bottom: env(safe-area-inset-bottom);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .tab {
+    flex: 1;
+    padding: 12px 4px 10px;
+    background: none;
+    border: none;
+    color: var(--ink-mute);
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .tab-glyph {
+    display: block;
+    font-family: var(--mono);
+    font-size: 16px;
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+  .tab.active { color: var(--accent); }
+  .tab.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+  }
+
+  /* ---------- MAIN ---------- */
+  main { padding: 16px; max-width: 720px; margin: 0 auto; }
+
+  .view { display: none; animation: slideIn 0.25s ease; }
+  .view.active { display: block; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 22px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::before {
+    content: "";
+    width: 8px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .section-label:first-child { margin-top: 0; }
+
+  /* ---------- BLOCK CARDS (schedule) ---------- */
+  .block {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    display: grid;
+    grid-template-columns: 76px 1fr;
+    gap: 14px;
+    align-items: start;
+    transition: border-color 0.2s;
+    position: relative;
+  }
+  .block.now {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, var(--accent-soft) 0%, var(--bg-elev) 60%);
+    box-shadow: 0 0 0 1px var(--accent), 0 4px 20px rgba(52, 211, 153, 0.15);
+  }
+  .block.now::before {
+    content: "NOW";
+    position: absolute;
+    top: -1px;
+    right: 14px;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 0 0 6px 6px;
+    letter-spacing: 0.15em;
+  }
+  .block.past {
+    opacity: 0.45;
+  }
+  .block-time {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent-ink);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .block.past .block-time { color: var(--ink-mute); }
+  .block-duration {
+    display: block;
+    font-size: 10px;
+    color: var(--ink-mute);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+  .block-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 4px;
+    letter-spacing: -0.005em;
+  }
+  .block-detail {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* ---------- PRINCIPLES / CARDS ---------- */
+  .card {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+  }
+  .card-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .card-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+    letter-spacing: -0.005em;
+  }
+  .card-body {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  /* ---------- GYM ---------- */
+  .day-selector {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 16px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 4px;
+  }
+  .day-selector-btn {
+    padding: 10px 4px;
+    background: transparent;
+    border: none;
+    color: var(--ink-mute);
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+  .day-selector-btn.active {
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+  }
+  .day-selector-btn.today {
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+
+  .gym-header {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .gym-focus {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .gym-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+  .gym-meta {
+    font-size: 12px;
+    color: var(--ink-mute);
+    font-family: var(--mono);
+  }
+
+  .exercise {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .exercise-left { flex: 1; min-width: 0; }
+  .exercise-name {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+  .exercise-note {
+    font-size: 12px;
+    color: var(--ink-mute);
+    line-height: 1.45;
+  }
+  .exercise-sets {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent-ink);
+    font-weight: 500;
+    white-space: nowrap;
+    background: var(--accent-soft);
+    padding: 4px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+  }
+
+  .rest-card {
+    background: var(--bg-elev);
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    padding: 24px 16px;
+    text-align: center;
+  }
+  .rest-card .glyph {
+    font-family: var(--mono);
+    font-size: 28px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    letter-spacing: 0.2em;
+  }
+  .rest-card .label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .rest-card .note {
+    font-size: 12px;
+    color: var(--ink-mute);
+  }
+
+  /* ---------- MIND (meditation + anxiety) ---------- */
+  .ritual-step {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+  .ritual-num {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 600;
+    background: var(--accent-soft);
+    border-radius: 6px;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ritual-phase {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .ritual-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .ritual-detail {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .layer-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--accent);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+  }
+  .layer-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .layer-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .layer-body {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  .emergency-box {
+    background: linear-gradient(135deg, var(--accent-soft), var(--bg-elev));
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 10px;
+  }
+  .emergency-box .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .emergency-box .title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .emergency-box .body {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* ---------- BREATHING WIDGET ---------- */
+  .breath-widget {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px 16px;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .breath-circle {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    margin: 16px auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: radial-gradient(circle, var(--accent-soft), transparent 70%);
+    transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .breath-circle.running {
+    animation: breathe 16s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%   { transform: scale(0.7); box-shadow: 0 0 20px rgba(52, 211, 153, 0.2); }
+    25%  { transform: scale(1);   box-shadow: 0 0 40px rgba(52, 211, 153, 0.5); }
+    50%  { transform: scale(1);   box-shadow: 0 0 40px rgba(52, 211, 153, 0.5); }
+    75%  { transform: scale(0.7); box-shadow: 0 0 20px rgba(52, 211, 153, 0.2); }
+    100% { transform: scale(0.7); box-shadow: 0 0 20px rgba(52, 211, 153, 0.2); }
+  }
+  .breath-label {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .breath-count {
+    font-family: var(--mono);
+    font-size: 22px;
+    color: var(--ink);
+    font-weight: 600;
+    margin-top: 4px;
+  }
+  .breath-timer {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-mute);
+    margin-bottom: 4px;
+    letter-spacing: 0.1em;
+  }
+  .breath-btn {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 10px 22px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: all 0.15s;
+  }
+  .breath-btn:hover { filter: brightness(1.1); }
+  .breath-btn:active { transform: scale(0.97); }
+  .breath-btn.stop { background: var(--warn); }
+
+  /* ---------- READING ---------- */
+  .book {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    display: grid;
+    grid-template-columns: 30px 1fr 28px;
+    gap: 12px;
+    align-items: flex-start;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .book.read {
+    opacity: 0.55;
+    border-left: 2px solid var(--accent);
+  }
+  .book.read .book-title {
+    text-decoration: line-through;
+    text-decoration-color: var(--ink-mute);
+  }
+  .book-idx {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .book-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .book-author {
+    font-size: 11px;
+    color: var(--ink-mute);
+    font-family: var(--mono);
+    margin-bottom: 5px;
+    letter-spacing: 0.02em;
+  }
+  .book-why {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .book-check {
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid var(--line);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: transparent;
+    transition: all 0.15s;
+    margin-top: 2px;
+  }
+  .book.read .book-check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+
+  .rule-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+  }
+  .rule-card.critical {
+    border-left: 2px solid var(--warn);
+  }
+  .rule-card.critical .rule-label { color: var(--warn); }
+
+  .rule-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .rule-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .rule-body {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  footer {
+    padding: 28px 20px 16px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-mute);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  footer .sep { color: var(--accent); margin: 0 6px; }
+
+  @media (min-width: 640px) {
+    h1 { font-size: 32px; }
+    main { padding: 24px; }
+    .block { grid-template-columns: 100px 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <span><span class="status-dot"></span>MASTERPLAN · PRAVANJAN</span>
+    <span id="dayLabel">—</span>
+  </div>
+  <h1>Discipline<span class="slash"> / </span>Daily</h1>
+  <div class="header-sub">
+    <span id="dateLine">—</span>
+    <span class="time" id="currentTime">—</span>
+  </div>
+  <div class="phase-toggle">
+    <button class="phase-btn active" data-phase="1">
+      PHASE 1
+      <span class="phase-label-full">Cuttack · Apr 10 — May 5</span>
+    </button>
+    <button class="phase-btn" data-phase="2">
+      PHASE 2
+      <span class="phase-label-full">Bangalore · May 8 →</span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ NOW ============ -->
+  <section class="view active" id="view-now">
+    <div class="section-label">Today's Schedule</div>
+    <div id="scheduleContainer"></div>
+
+    <div class="section-label">5 Principles</div>
+    <div id="principlesContainer"></div>
+  </section>
+
+  <!-- ============ GYM ============ -->
+  <section class="view" id="view-gym">
+    <div class="section-label">Weekly Split</div>
+    <div class="day-selector" id="gymDaySelector"></div>
+    <div id="gymContent"></div>
+  </section>
+
+  <!-- ============ MIND ============ -->
+  <section class="view" id="view-mind">
+    <div class="section-label">Box Breathing · 10 min</div>
+    <div class="breath-widget">
+      <div class="breath-timer" id="breathTimer">10:00</div>
+      <div class="breath-circle" id="breathCircle">
+        <div>
+          <div class="breath-label" id="breathLabel">READY</div>
+          <div class="breath-count" id="breathCount">4</div>
+        </div>
+      </div>
+      <button class="breath-btn" id="breathBtn">START</button>
+    </div>
+
+    <div class="emergency-box">
+      <div class="label">Emergency tool</div>
+      <div class="title">4 cycles · 1 minute</div>
+      <div class="body">When anxiety spikes mid-work, in a meeting, or at night: 4 complete cycles of box breathing reduces a stress response by ~50% in real time. Use the timer above.</div>
+    </div>
+
+    <div class="section-label">Protocol Steps</div>
+    <div id="meditationSteps"></div>
+
+    <div class="section-label">6-Layer Anxiety Protocol</div>
+    <div id="anxietyLayers"></div>
+
+    <div class="section-label">5-min Evening Journal</div>
+    <div id="journalSteps"></div>
+  </section>
+
+  <!-- ============ READ ============ -->
+  <section class="view" id="view-read">
+    <div class="section-label">Reading List · In Sequence</div>
+    <div id="bookList"></div>
+
+    <div class="section-label">Deep Work Rules</div>
+    <div id="deepWorkRules"></div>
+  </section>
+
+</main>
+
+<nav class="tabs">
+  <button class="tab active" data-view="now"><span class="tab-glyph">▣</span>Now</button>
+  <button class="tab" data-view="gym"><span class="tab-glyph">◊</span>Gym</button>
+  <button class="tab" data-view="mind"><span class="tab-glyph">◉</span>Mind</button>
+  <button class="tab" data-view="read"><span class="tab-glyph">☰</span>Read</button>
+</nav>
+
+<footer>
+  <span>SLEEP 8H</span><span class="sep">/</span>
+  <span>GYM NON-NEG</span><span class="sep">/</span>
+  <span>SHUTDOWN 9:30</span>
+</footer>
+
+<script>
+/* ================================================================
+   DATA
+   ================================================================ */
+
+const PRINCIPLES = [
+  { n: "01", t: "Morning sets the day", b: "The first 60 minutes determine your energy, focus, and anxiety level for the next 14 hours. Protect this window fiercely — no phone, no news, no email." },
+  { n: "02", t: "Evening ends the day properly", b: "A defined shutdown ritual signals your brain that work is done. Without this signal, your brain keeps processing work anxiety through the night. Most common cause of poor sleep in professionals." },
+  { n: "03", t: "Gym is non-negotiable", b: "Missing one gym session is fine. Missing two in a row starts a pattern. Gym is your most important anxiety management tool — more effective than any other single intervention." },
+  { n: "04", t: "Sleep is the master variable", b: "Every other habit becomes 30–40% less effective when you sleep under 7 hours. Poor sleep worsens anxiety, slows fat loss, reduces gym gains, impairs cognition — simultaneously." },
+  { n: "05", t: "Build before Bangalore", b: "25 days in Cuttack with zero external pressure. Every habit you lock in now arrives with you on May 8. Most people try to build habits while adjusting to a new city and job. You're doing it before." }
+];
+
+// Phase 1 — Cuttack schedule
+const SCHEDULE_P1 = [
+  { start: "08:00", end: "08:15", dur: "15 min", name: "Wake-up ritual", detail: "Warm water + lemon. 8 soaked almonds + 5 walnuts. Step outside for sunlight — stand or sit, no phone." },
+  { start: "08:15", end: "08:25", dur: "10 min", name: "Meditation", detail: "Box breathing — 10 minutes exactly. Sit upright, eyes closed. 4 in, 4 hold, 4 out, 4 empty. Before breakfast, before phone." },
+  { start: "08:30", end: "09:00", dur: "30 min", name: "Morning walk", detail: "Brisk walk outside — talk-but-breathless pace. No headphones first 10 min. Think, plan, observe. Daily cardio + HDL booster." },
+  { start: "09:00", end: "09:30", dur: "30 min", name: "Breakfast", detail: "Breakfast A (Mon/Wed/Fri) or B (Tue/Thu/Sat). Eat slowly, no phone, no TV. Mindful eating cuts portion 15–20% naturally." },
+  { start: "09:30", end: "12:00", dur: "2.5 hrs", name: "Deep work block", detail: "Peak cognitive window. Accenture prep, industry reading, skill building. Phone silent. No social. 50-min focused blocks + 10-min breaks (Pomodoro)." },
+  { start: "12:00", end: "12:10", dur: "10 min", name: "Mid-morning snack", detail: "As per diet. Step away completely — look out the window, not at a screen. Hydrate. 10-min genuine break." },
+  { start: "12:10", end: "13:20", dur: "70 min", name: "Light work · admin", detail: "Emails, calls, errands, Accenture HR, Bangalore apartment research. Lower cognitive intensity — save deep thinking for the morning block." },
+  { start: "13:30", end: "14:10", dur: "40 min", name: "Lunch", detail: "Salad first — always. Eat at the table, not the desk. 30–40 min break. 15–20 min sitting rest after. No full afternoon sleep." },
+  { start: "14:30", end: "16:00", dur: "90 min", name: "Reading block", detail: "Physical book or Kindle — not phone. Start at 20 pages if 30 feels hard. Build to 30/day within 2 weeks. Replaces afternoon sleep entirely." },
+  { start: "16:00", end: "16:15", dur: "15 min", name: "Evening snack", detail: "As per diet. 2 squares dark chocolate. Green tea or black coffee, no sugar. Pre-workout fuel." },
+  { start: "16:30", end: "17:30", dur: "60 min", name: "Home workout", detail: "Bodyweight circuit — see Gym tab. Follow weekly split. Mon: Push · Tue: Pull · Wed: Walk · Thu: Legs · Fri: HIIT · Sat: Cricket/Full · Sun: Rest." },
+  { start: "17:30", end: "20:00", dur: "2.5 hrs", name: "Personal time", detail: "Family, Thanmayi, friends, cricket, a series, mental rest. Do NOT mix work into this window. Genuine rest, not pseudo-rest with work guilt." },
+  { start: "20:00", end: "20:30", dur: "30 min", name: "Dinner", detail: "By 8pm — not 8:30 or 9. High protein, light carbs. No screens at the table. Done eating by 8:30pm maximum." },
+  { start: "20:30", end: "22:00", dur: "90 min", name: "Evening wind-down", detail: "Light reading (20–30 min). Then 5-min journal: 3 wins + 1 thing better tomorrow + 1 sentence on how you feel. Directly reduces nighttime rumination." },
+  { start: "22:00", end: "22:30", dur: "30 min", name: "Sleep preparation", detail: "Turmeric milk or chamomile tea (alternate). Dim lights. Phone OUTSIDE bedroom. Lie down by 10:30. Target: asleep by 11. 11 → 7am." }
+];
+
+// Phase 2 — Bangalore WFH schedule
+const SCHEDULE_P2 = [
+  { start: "06:30", end: "06:45", dur: "15 min", name: "Wake-up ritual", detail: "Warm water + lemon. 8 soaked almonds + 5 walnuts. Balcony / window for 10-min sunlight. Sets cortisol rhythm for the entire day." },
+  { start: "06:45", end: "06:55", dur: "10 min", name: "Meditation", detail: "Box breathing — 10 min. Before phone. Before laptop. Before anything. Non-negotiable even on hectic days. If you only do one thing in the morning — this." },
+  { start: "07:00", end: "07:20", dur: "20 min", name: "Morning walk", detail: "Brisk walk around apartment or nearby road. Shorter than Cuttack but sufficient. Skip only if raining — do 10 min jumping jacks at home." },
+  { start: "07:20", end: "07:45", dur: "25 min", name: "Breakfast", detail: "Breakfast A (oats) or B (omelette + avocado). Both under 10 min prep. Eat BEFORE opening the laptop — this boundary matters psychologically." },
+  { start: "08:00", end: "10:00", dur: "2 hrs", name: "Deep work block 1", detail: "Highest-value consulting work: decks, client analysis, frameworks, proposals. Phone silent. Slack/email notifications OFF. NO meetings before 10am." },
+  { start: "10:00", end: "12:00", dur: "2 hrs", name: "Meetings · collaboration", detail: "Cluster all meetings here. Standup, client calls, team syncs, internal reviews. Notepad always — write action items after each call, not later." },
+  { start: "12:00", end: "12:10", dur: "10 min", name: "Mid-morning snack", detail: "Step away from desk completely. 10-min break — look out window, not screen. Physical movement even 5 min improves afternoon output measurably." },
+  { start: "12:15", end: "13:15", dur: "60 min", name: "Deep work block 2", detail: "Second focused block. Use for: editing deliverables, reviewing work, reading industry reports, writing. Refining and reviewing rather than creating from scratch." },
+  { start: "13:30", end: "14:15", dur: "45 min", name: "Lunch", detail: "Eat at dining table — NOT the desk. Physical separation is critical for mental reset. 30 min break min. 15 min sitting rest after." },
+  { start: "14:30", end: "16:00", dur: "90 min", name: "Admin · light work · reading", detail: "60 min admin (emails, documentation, reports, calendar). Then 30 min reading from your book list. Consistent — 20–25 pages." },
+  { start: "16:00", end: "16:15", dur: "15 min", name: "Evening snack", detail: "Pre-gym fuel — 60 min before gym. Snack + 2 squares dark chocolate. PB apple or makhana preferred. Do NOT gym on empty stomach." },
+  { start: "17:00", end: "18:15", dur: "75 min", name: "GYM", detail: "Phase 2 programme — see Gym tab. Non-negotiable anchor of your Bangalore routine. Everything else can flex — gym does not. Post-gym: 2 boiled eggs or curd if hungry." },
+  { start: "18:30", end: "20:00", dur: "90 min", name: "Personal time", detail: "Thanmayi, family, friends. Cook dinner with music. One episode. Full mental rest. No work. No Slack. No email. Your nervous system needs this window." },
+  { start: "20:00", end: "20:30", dur: "30 min", name: "Dinner", detail: "High protein, light carbs. Simple weeknight cooking: egg bhurji, grilled chicken, dal + roti. Meal prep Sunday → weeknight cooking <20 min." },
+  { start: "21:00", end: "21:30", dur: "30 min", name: "SHUTDOWN RITUAL", detail: "CRITICAL — do not skip. Write tomorrow's top 3 priorities in notebook (not phone). Close the laptop. Do NOT reopen. 9:30pm hard cutoff for all work." },
+  { start: "21:30", end: "22:15", dur: "45 min", name: "Evening wind-down", detail: "5-min journal: 3 wins + 1 tomorrow intention + 1 sentence on feeling. Then light reading — 20 min. No screens after 10pm. Chamomile tea or turmeric milk." },
+  { start: "22:30", end: "06:30", dur: "8 hrs", name: "Sleep", detail: "Phone charged OUTSIDE the bedroom. Lights off. Target: asleep by 10:30–11pm. Sleep is the pillar everything else rests on. Protect above all else." }
+];
+
+// Gym programmes
+const GYM_SPLIT = [
+  { key: "mon", day: "MON", focus: "PUSH", p1Name: "Home Push — chest, shoulders, triceps", p2Name: "Chest + Triceps", focus_full: "Pushing muscles" },
+  { key: "tue", day: "TUE", focus: "PULL", p1Name: "Home Pull — back, biceps", p2Name: "Back + Biceps", focus_full: "Pulling muscles" },
+  { key: "wed", day: "WED", focus: "REST", p1Name: "Walk only — active rest", p2Name: "Rest — walk 20 min", focus_full: "Recovery" },
+  { key: "thu", day: "THU", focus: "LEGS", p1Name: "Home Legs — full lower body", p2Name: "Shoulders + Core", focus_full: "Lower body / stability" },
+  { key: "fri", day: "FRI", focus: "HIIT", p1Name: "HIIT + core — fat burner", p2Name: "Legs — heavy day", focus_full: "Fat burn / power" },
+  { key: "sat", day: "SAT", focus: "FULL", p1Name: "Cricket or full body circuit", p2Name: "Full body or cricket", focus_full: "Active + fun" },
+  { key: "sun", day: "SUN", focus: "REST", p1Name: "Rest — cheat day", p2Name: "Rest — cheat day", focus_full: "Full recovery" }
+];
+
+const GYM_P1 = {
+  mon: { meta: "Home · 60 min · bodyweight", exercises: [
+    { n: "Push-ups (full range, chest to floor)", s: "4 × 12–15", note: "Core tight, full range." },
+    { n: "Wide push-ups (hands wider than shoulders)", s: "3 × 10–12", note: "Targets chest." },
+    { n: "Pike push-ups (hips high, head between arms)", s: "3 × 10", note: "Shoulder focus." },
+    { n: "Diamond push-ups (hands together)", s: "3 × 8–10", note: "Isolates triceps." },
+    { n: "Chair dips", s: "3 × 12", note: "Triceps + lower chest." },
+    { n: "Plank hold", s: "3 × 45 sec", note: "Core stability." }
+  ]},
+  tue: { meta: "Home · 60 min · bodyweight", exercises: [
+    { n: "Doorframe rows (hold frame, lean back, pull chest to it)", s: "4 × 10–12", note: "Lat activation." },
+    { n: "Superman holds (face down, lift arms + legs)", s: "3 × 12, hold 2s", note: "Lower back." },
+    { n: "Resistance curl (towel/dupatta under foot)", s: "3 × 15 each arm", note: "Bicep isolation." },
+    { n: "Reverse push-ups (lie under table, pull to edge)", s: "3 × 10", note: "Upper back." },
+    { n: "Good mornings (hinge at hip, back flat)", s: "3 × 15", note: "Hamstrings + lower back." },
+    { n: "Plank rows (plank, row arms to hip alternating)", s: "3 × 10 each side", note: "Core + back." }
+  ]},
+  wed: { meta: "Active rest", rest: true, restLabel: "WALK ONLY", restNote: "30-min walk. Nothing else. Recovery is training." },
+  thu: { meta: "Home · 60 min · bodyweight", exercises: [
+    { n: "Bodyweight squats (deep, knees track toes, chest up)", s: "4 × 20", note: "Full leg activation." },
+    { n: "Walking lunges (step forward, knee near floor)", s: "3 × 12 each leg", note: "Glutes + quads." },
+    { n: "Jump squats (explode up, land softly)", s: "3 × 10", note: "Power + fat burn." },
+    { n: "Glute bridges (push hips up, squeeze top)", s: "4 × 15", note: "Glutes + hamstrings." },
+    { n: "Single leg calf raises", s: "3 × 20 each leg", note: "Calf strength." },
+    { n: "Wall sit (back on wall, 90° hold)", s: "3 × 45 sec", note: "Quad endurance." }
+  ]},
+  fri: { meta: "Home · 60 min · HIIT + core", exercises: [
+    { n: "Burpees (squat · jump back · push-up · jump up)", s: "4 × 10", note: "Full body fat burn." },
+    { n: "Mountain climbers (plank, drive knees fast)", s: "4 × 30 sec", note: "Cardio + core." },
+    { n: "Crunches (controlled, exhale up)", s: "3 × 20", note: "Upper abs." },
+    { n: "Leg raises (lie flat, lift to 90°, lower slowly)", s: "3 × 15", note: "Lower abs." },
+    { n: "High knees (run in place, knees to hip)", s: "4 × 30 sec", note: "Cardio." },
+    { n: "Russian twists (lean 45°, rotate side to side)", s: "3 × 20 total", note: "Obliques." }
+  ]},
+  sat: { meta: "Cricket or full body circuit", rest: false, exercises: [
+    { n: "Cricket outdoors", s: "60–90 min", note: "Preferred option — fun + cardio + social." },
+    { n: "— or — Full body circuit", s: "3 rounds", note: "If no cricket available." },
+    { n: "Round: 15 squats · 10 push-ups · 10 lunges each leg · 30s plank", s: "× 3", note: "45 sec rest between rounds." }
+  ]},
+  sun: { meta: "Full recovery", rest: true, restLabel: "REST DAY", restNote: "Cheat lunch + moong dal khichdi dinner. Walk 15 min after cheat meal. That is all." }
+};
+
+const GYM_P2 = {
+  mon: { meta: "Bangalore gym · 75 min", exercises: [
+    { n: "Flat bench press (barbell or dumbbell)", s: "4 × 10–12", note: "Touch chest, full range. Control the descent." },
+    { n: "Incline dumbbell press (30–45°)", s: "3 × 12", note: "Upper chest. Don't flare elbows wide." },
+    { n: "Cable or dumbbell fly", s: "3 × 12–15", note: "Wide arc, squeeze at top. Light weight, feel the stretch." },
+    { n: "Tricep pushdown (cable)", s: "4 × 12", note: "Elbows locked at sides. Squeeze at extension." },
+    { n: "Overhead tricep extension (dumbbell)", s: "3 × 12", note: "Full range — lower behind head, extend fully." },
+    { n: "Dips on parallel bars", s: "3 × 10–12", note: "Lean slightly forward for chest emphasis." }
+  ]},
+  tue: { meta: "Bangalore gym · 75 min", exercises: [
+    { n: "Lat pulldown (wide grip)", s: "4 × 10–12", note: "Pull to upper chest. Lean back slightly. Feel the lats." },
+    { n: "Seated cable row", s: "4 × 12", note: "Pull elbows back. Squeeze shoulder blades at end." },
+    { n: "Dumbbell single arm row", s: "3 × 12 each", note: "Elbow drives back, full range. Don't rotate torso." },
+    { n: "Face pulls (cable to forehead)", s: "3 × 15", note: "Rear delt + upper back. Elbows flared high." },
+    { n: "Barbell or dumbbell curl", s: "4 × 12", note: "Full extension bottom. Squeeze top. No swinging." },
+    { n: "Hammer curl (neutral grip)", s: "3 × 12", note: "Targets brachialis — adds arm thickness." }
+  ]},
+  wed: { meta: "Active rest", rest: true, restLabel: "WALK ONLY", restNote: "20-min walk. Nothing else. Recovery is training." },
+  thu: { meta: "Bangalore gym · 75 min · Shoulders + Core", exercises: [
+    { n: "Overhead press (barbell or dumbbell)", s: "4 × 10", note: "Press directly overhead. Core tight. Don't arch back." },
+    { n: "Lateral raises (dumbbells)", s: "4 × 15", note: "Raise to shoulder height only. Control descent — 3s down." },
+    { n: "Front raises (alternating)", s: "3 × 12 each", note: "Front delt isolation. Keep slight elbow bend." },
+    { n: "Face pulls (cable)", s: "3 × 15", note: "Rear delt health — prevents shoulder injury long-term." },
+    { n: "Plank (gym floor)", s: "3 × 60 sec", note: "Perfect form — straight line head to heel." },
+    { n: "Cable crunch or decline crunch", s: "3 × 15", note: "Core strength. Exhale at full contraction." }
+  ]},
+  fri: { meta: "Heavy day · most important session", exercises: [
+    { n: "Barbell squat", s: "4 × 8–10", note: "King of exercises. Deep squat. Start light, add weight weekly." },
+    { n: "Leg press", s: "4 × 12", note: "Feet shoulder-width. Full range. Do not lock knees at top." },
+    { n: "Romanian deadlift (RDL)", s: "3 × 10", note: "Hinge at hip. Feel hamstring stretch. Back flat throughout." },
+    { n: "Leg curl machine", s: "3 × 12", note: "Hamstring isolation. Full range. Slow on way down (3s)." },
+    { n: "Walking lunges with dumbbells", s: "3 × 10 each leg", note: "Across the gym floor. Controlled, not rushed." },
+    { n: "Calf raises machine", s: "4 × 20", note: "Full range — heels drop below platform, rise fully onto toes." }
+  ]},
+  sat: { meta: "Full body or cricket", exercises: [
+    { n: "Cricket (preferred)", s: "60–90 min", note: "Social + cardio. Makes Bangalore weekends feel like home." },
+    { n: "— or — Full body circuit at gym", s: "45–60 min", note: "If no cricket: squat, bench, row, press, pull-ups — 3 sets each." }
+  ]},
+  sun: { meta: "Full recovery", rest: true, restLabel: "REST DAY", restNote: "Cheat lunch. Khichdi dinner. 15-min walk after cheat. Nothing else." }
+};
+
+// Meditation protocol steps
+const MEDITATION_STEPS = [
+  { n: 1, phase: "Setup · 1 min", name: "Sit upright", detail: "Chair, floor, or bed edge. Back straight. Hands on knees. Eyes closed. Set a 10-min timer, place phone face down. That is all the prep needed." },
+  { n: 2, phase: "Inhale · 4 counts", name: "Breathe in through nose", detail: "Slowly, count 1-2-3-4. Feel your belly expand, not just your chest. Belly breathing activates the parasympathetic nervous system — the body's calm state." },
+  { n: 3, phase: "Hold · 4 counts", name: "Lungs full", detail: "Count 1-2-3-4. Do not tense up — stay relaxed. This pause is where the nervous system begins to reset." },
+  { n: 4, phase: "Exhale · 4 counts", name: "Release through mouth", detail: "Slowly, count 1-2-3-4. Empty your lungs fully. Exhale is where anxiety physically leaves the body — the most important part of the cycle." },
+  { n: 5, phase: "Hold · 4 counts", name: "Lungs empty", detail: "Count 1-2-3-4. Then repeat from step 2. One full cycle = 16 seconds. ~35 cycles in 10 minutes." },
+  { n: 6, phase: "When thoughts come", name: "Return without judgment", detail: "Do not fight thoughts — this is a beginner mistake. When you notice your mind has wandered, simply return to the count. The returning IS the practice." },
+  { n: 7, phase: "After 10 min", name: "Sit for 30 seconds", detail: "Open eyes slowly. Do not check your phone immediately — give the calm state 5 minutes to settle before the day starts." }
+];
+
+const JOURNAL_STEPS = [
+  { n: 1, phase: "Line 1", name: "Three wins today", detail: "Anything — however small. 'Ate salad before lunch.' 'Did 10 min meditation.' 'Finished the deck on time.' Size doesn't matter. Forces your brain to scan for positives instead of threats." },
+  { n: 2, phase: "Line 2", name: "One thing better tomorrow", detail: "One specific action. 'I will eat dinner by 8pm.' Not vague ('I will be healthier'). Specific and actionable only. A concrete plan reduces residual anxiety about tomorrow." },
+  { n: 3, phase: "Line 3", name: "One sentence on how I feel", detail: "'I feel tired but satisfied.' 'I feel anxious about the client call tomorrow.' Just name it. Naming an emotion reduces its intensity by up to 50% — affect labelling. Takes 10 seconds." }
+];
+
+const ANXIETY_LAYERS = [
+  { label: "LAYER 1 · PHYSIOLOGICAL", title: "Diet fixes body chemistry", body: "Magnesium (walnuts + dark chocolate + almonds) reduces cortisol. Omega-3 (fish + flaxseeds) reduces neuroinflammation. Gut healing (curd + chaas + fibre) — 70% of serotonin is produced in the gut. Blood sugar stability from protein-rich meals eliminates sugar crash spikes. The diet IS the anxiety treatment at the physiological level." },
+  { label: "LAYER 2 · NERVOUS SYSTEM", title: "Box breathing", body: "10 min every morning physically shifts your baseline nervous system state over 30 days. HRV — measurable biomarker of anxiety resilience — increases with practice. Use same technique for acute moments: 4 cycles reduces a panic response by ~50% in real time." },
+  { label: "LAYER 3 · SLEEP", title: "The master regulator", body: "Anxiety and sleep deprivation create a vicious cycle. Breaking it is the highest-leverage intervention available. Chamomile or turmeric milk at 10:30pm, phone outside bedroom, consistent 10:30–11pm sleep, 8 hours. Within 2 weeks anxiety baseline drops measurably without any other change." },
+  { label: "LAYER 4 · EXERCISE", title: "Most underrated anxiety treatment", body: "A single 45-min workout reduces state anxiety for 4–6 hrs — more effectively than anxiolytic medication in mild-to-moderate cases (clinical data). Gym at 5pm means you're calmer during dinner, wind-down, and sleep. 12 weeks of regular exercise ≈ standard SSRI dose in multiple trials." },
+  { label: "LAYER 5 · COGNITIVE", title: "Journal + the one reframe", body: "5-min evening journal trains your brain to scan for positives over threats — rewires the default mode network over 60 days. The one reframe: 'Is this a real threat right now, or my nervous system processing a hypothetical?' 95% of anxiety is about things that haven't happened. Naming this interrupts the loop. Then 4 cycles of box breathing." },
+  { label: "LAYER 6 · SHUTDOWN", title: "Work-specific anxiety", body: "Consulting generates a specific type of anxiety — open loops, unfinished deliverables, client pressure. Without a defined end to the workday, these loops keep processing at night. Shutdown ritual (3 priorities, close laptop, do not reopen) closes them deliberately. Without this signal there is no genuine rest." }
+];
+
+const BOOKS = [
+  { idx: "01", title: "Atomic Habits", author: "James Clear", why: "Read first. Underpins every other habit in this plan. Makes everything here significantly more likely to stick. Most important book for the next 90 days." },
+  { idx: "02", title: "The Anxious Generation", author: "Jonathan Haidt", why: "Understand the neuroscience of your own anxiety. Changes how you relate to it — from something that controls you to something you understand and manage." },
+  { idx: "03", title: "Deep Work", author: "Cal Newport", why: "Essential for consulting. Defines the skill that separates top performers from average ones. Your 8–10am block is the direct application of this book." },
+  { idx: "04", title: "The McKinsey Way", author: "Ethan Rasiel", why: "Consulting-specific. Frameworks, client communication, structured problem-solving. Read before or immediately after joining Accenture." },
+  { idx: "05", title: "Thinking Fast and Slow", author: "Daniel Kahneman", why: "Mental models for decision-making. Makes you a sharper analyst and more persuasive communicator — both critical in strategy consulting." },
+  { idx: "06", title: "Why We Sleep", author: "Matthew Walker", why: "Will permanently change how you treat sleep. Direct impact on anxiety, fat loss, gym gains, cognition. Read this and protect your 8 hours." },
+  { idx: "07", title: "The Psychology of Money", author: "Morgan Housel", why: "Highly relevant to your 10-crore goal. Short chapters, re-readable. Read alongside financial planning for Bangalore and beyond." },
+  { idx: "08", title: "Surrounded by Idiots", author: "Thomas Eriksson", why: "People typology for professionals. Extremely practical for client management, stakeholder communication, and navigating consulting team dynamics." }
+];
+
+const DEEP_WORK_RULES = [
+  { label: "RULE 01", title: "Protect your morning block", body: "Never schedule meetings before 10am if you can avoid it. Your 8–10am block is worth more than any meeting in output quality. This is where your reputation as a consultant is built — not in meetings." },
+  { label: "RULE 02", title: "One task at a time", body: "Close all browser tabs except what you're working on. Multitasking reduces output quality by ~40% — measured cognitive finding, not a feeling. Each task switch costs 20+ min of refocus time." },
+  { label: "RULE 03", title: "Write to think", body: "Before every major deliverable, write a half-page outline of what you're trying to say and what the conclusion is. Consulting is 80% structured thinking and 20% execution. The outline is the thinking." },
+  { label: "RULE 04 · SHUTDOWN", title: "End every WFH workday at 9pm sharp", body: "Write tomorrow's top 3 priorities in your notebook. Close the laptop. Do NOT reopen it. Non-negotiable. Without a defined end, your brain keeps processing work through the night — direct cause of anxiety and poor sleep in knowledge workers. Single most important habit for a consultant's mental health.", critical: true }
+];
+
+/* ================================================================
+   STATE + UTILS
+   ================================================================ */
+
+const STORAGE_KEY = "pravanjan-masterplan-v1";
+const state = {
+  view: "now",
+  phase: 1,
+  selectedGymDay: null,
+  booksRead: {}
+};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem(STORAGE_KEY);
+    if (s) {
+      const p = JSON.parse(s);
+      state.phase = p.phase || 1;
+      state.booksRead = p.booksRead || {};
+    }
+  } catch(e) {}
+}
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      phase: state.phase,
+      booksRead: state.booksRead
+    }));
+  } catch(e) {}
+}
+
+function minutesNow() {
+  const d = new Date();
+  return d.getHours() * 60 + d.getMinutes();
+}
+function hmToMin(s) {
+  const [h, m] = s.split(":").map(Number);
+  return h * 60 + m;
+}
+function fmtClock() {
+  const d = new Date();
+  const h = String(d.getHours()).padStart(2, "0");
+  const m = String(d.getMinutes()).padStart(2, "0");
+  return `${h}:${m}`;
+}
+function fmtDate() {
+  return new Date().toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+}
+function todayKey() {
+  return ["sun","mon","tue","wed","thu","fri","sat"][new Date().getDay()];
+}
+
+/* ================================================================
+   RENDER: NOW
+   ================================================================ */
+
+function blockStatus(block) {
+  const now = minutesNow();
+  const start = hmToMin(block.start);
+  const end = hmToMin(block.end);
+  if (now < start) return "upcoming";
+  if (now >= start && now < end) return "now";
+  return "past";
+}
+
+function renderNow() {
+  const schedule = state.phase === 1 ? SCHEDULE_P1 : SCHEDULE_P2;
+  document.getElementById("scheduleContainer").innerHTML = schedule.map(b => {
+    const status = blockStatus(b);
+    return `
+      <div class="block ${status}">
+        <div class="block-time">
+          ${b.start}
+          <span class="block-duration">${b.dur}</span>
+        </div>
+        <div>
+          <div class="block-name">${b.name}</div>
+          <div class="block-detail">${b.detail}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  document.getElementById("principlesContainer").innerHTML = PRINCIPLES.map(p => `
+    <div class="card">
+      <div class="card-num">${p.n}</div>
+      <div class="card-title">${p.t}</div>
+      <div class="card-body">${p.b}</div>
+    </div>
+  `).join("");
+}
+
+/* ================================================================
+   RENDER: GYM
+   ================================================================ */
+
+function renderGymSelector() {
+  const today = todayKey();
+  document.getElementById("gymDaySelector").innerHTML = GYM_SPLIT.map(d => `
+    <button class="day-selector-btn ${d.key === state.selectedGymDay ? 'active' : ''} ${d.key === today ? 'today' : ''}" data-gym-day="${d.key}">
+      ${d.day}
+    </button>
+  `).join("");
+
+  document.querySelectorAll("[data-gym-day]").forEach(b => {
+    b.addEventListener("click", () => {
+      state.selectedGymDay = b.dataset.gymDay;
+      renderGym();
+    });
+  });
+}
+
+function renderGym() {
+  const prog = state.phase === 1 ? GYM_P1 : GYM_P2;
+  const key = state.selectedGymDay || todayKey();
+  const split = GYM_SPLIT.find(d => d.key === key);
+  const session = prog[key];
+  const name = state.phase === 1 ? split.p1Name : split.p2Name;
+
+  let body = `
+    <div class="gym-header">
+      <div class="gym-focus">${split.focus} · ${split.focus_full}</div>
+      <div class="gym-title">${name}</div>
+      <div class="gym-meta">${session.meta}</div>
+    </div>
+  `;
+
+  if (session.rest) {
+    body += `
+      <div class="rest-card">
+        <div class="glyph">◯ ◯ ◯</div>
+        <div class="label">${session.restLabel}</div>
+        <div class="note">${session.restNote}</div>
+      </div>
+    `;
+  } else {
+    body += session.exercises.map(e => `
+      <div class="exercise">
+        <div class="exercise-left">
+          <div class="exercise-name">${e.n}</div>
+          <div class="exercise-note">${e.note}</div>
+        </div>
+        <div class="exercise-sets">${e.s}</div>
+      </div>
+    `).join("");
+  }
+
+  document.getElementById("gymContent").innerHTML = body;
+  renderGymSelector();
+}
+
+/* ================================================================
+   RENDER: MIND
+   ================================================================ */
+
+function renderMind() {
+  document.getElementById("meditationSteps").innerHTML = MEDITATION_STEPS.map(s => `
+    <div class="ritual-step">
+      <div class="ritual-num">${s.n}</div>
+      <div>
+        <div class="ritual-phase">${s.phase}</div>
+        <div class="ritual-name">${s.name}</div>
+        <div class="ritual-detail">${s.detail}</div>
+      </div>
+    </div>
+  `).join("");
+
+  document.getElementById("anxietyLayers").innerHTML = ANXIETY_LAYERS.map(l => `
+    <div class="layer-card">
+      <div class="layer-label">${l.label}</div>
+      <div class="layer-title">${l.title}</div>
+      <div class="layer-body">${l.body}</div>
+    </div>
+  `).join("");
+
+  document.getElementById("journalSteps").innerHTML = JOURNAL_STEPS.map(s => `
+    <div class="ritual-step">
+      <div class="ritual-num">${s.n}</div>
+      <div>
+        <div class="ritual-phase">${s.phase}</div>
+        <div class="ritual-name">${s.name}</div>
+        <div class="ritual-detail">${s.detail}</div>
+      </div>
+    </div>
+  `).join("");
+}
+
+/* ================================================================
+   BREATHING WIDGET
+   ================================================================ */
+
+let breathRunning = false;
+let breathInterval = null;
+let breathTimerInterval = null;
+const PHASES = [
+  { label: "INHALE", seconds: 4 },
+  { label: "HOLD",   seconds: 4 },
+  { label: "EXHALE", seconds: 4 },
+  { label: "HOLD",   seconds: 4 }
+];
+let phaseIdx = 0, phaseSec = 0, totalSec = 600;
+
+function updateBreathTimer() {
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  document.getElementById("breathTimer").textContent = `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function breathTick() {
+  phaseSec++;
+  const phase = PHASES[phaseIdx];
+  const remaining = phase.seconds - phaseSec;
+  document.getElementById("breathCount").textContent = String(Math.max(1, remaining));
+  if (phaseSec >= phase.seconds) {
+    phaseIdx = (phaseIdx + 1) % PHASES.length;
+    phaseSec = 0;
+    document.getElementById("breathLabel").textContent = PHASES[phaseIdx].label;
+    document.getElementById("breathCount").textContent = String(PHASES[phaseIdx].seconds);
+  }
+}
+
+function startBreath() {
+  breathRunning = true;
+  phaseIdx = 0;
+  phaseSec = 0;
+  totalSec = 600;
+  document.getElementById("breathCircle").classList.add("running");
+  document.getElementById("breathLabel").textContent = PHASES[0].label;
+  document.getElementById("breathCount").textContent = String(PHASES[0].seconds);
+  const btn = document.getElementById("breathBtn");
+  btn.textContent = "STOP";
+  btn.classList.add("stop");
+  updateBreathTimer();
+
+  breathInterval = setInterval(breathTick, 1000);
+  breathTimerInterval = setInterval(() => {
+    totalSec--;
+    updateBreathTimer();
+    if (totalSec <= 0) stopBreath(true);
+  }, 1000);
+}
+
+function stopBreath(completed = false) {
+  breathRunning = false;
+  clearInterval(breathInterval);
+  clearInterval(breathTimerInterval);
+  document.getElementById("breathCircle").classList.remove("running");
+  document.getElementById("breathLabel").textContent = completed ? "DONE" : "READY";
+  document.getElementById("breathCount").textContent = "4";
+  const btn = document.getElementById("breathBtn");
+  btn.textContent = "START";
+  btn.classList.remove("stop");
+  if (!completed) {
+    totalSec = 600;
+    updateBreathTimer();
+  }
+}
+
+/* ================================================================
+   RENDER: READ
+   ================================================================ */
+
+function renderRead() {
+  document.getElementById("bookList").innerHTML = BOOKS.map(b => {
+    const read = state.booksRead[b.idx] ? "read" : "";
+    return `
+      <div class="book ${read}" data-book="${b.idx}">
+        <div class="book-idx">${b.idx}</div>
+        <div>
+          <div class="book-title">${b.title}</div>
+          <div class="book-author">${b.author}</div>
+          <div class="book-why">${b.why}</div>
+        </div>
+        <div class="book-check">✓</div>
+      </div>
+    `;
+  }).join("");
+
+  document.querySelectorAll("[data-book]").forEach(el => {
+    el.addEventListener("click", () => {
+      const idx = el.dataset.book;
+      state.booksRead[idx] = !state.booksRead[idx];
+      el.classList.toggle("read");
+      saveState();
+    });
+  });
+
+  document.getElementById("deepWorkRules").innerHTML = DEEP_WORK_RULES.map(r => `
+    <div class="rule-card ${r.critical ? 'critical' : ''}">
+      <div class="rule-label">${r.label}</div>
+      <div class="rule-title">${r.title}</div>
+      <div class="rule-body">${r.body}</div>
+    </div>
+  `).join("");
+}
+
+/* ================================================================
+   VIEW SWITCHING + INIT
+   ================================================================ */
+
+function switchView(v) {
+  // Stop breathing if leaving Mind
+  if (state.view === "mind" && v !== "mind" && breathRunning) stopBreath();
+  state.view = v;
+  document.querySelectorAll(".view").forEach(el => el.classList.remove("active"));
+  document.getElementById("view-" + v).classList.add("active");
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.view === v));
+
+  if (v === "now") renderNow();
+  if (v === "gym") renderGym();
+  if (v === "mind") renderMind();
+  if (v === "read") renderRead();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function switchPhase(p) {
+  state.phase = p;
+  document.querySelectorAll(".phase-btn").forEach(b => b.classList.toggle("active", Number(b.dataset.phase) === p));
+  saveState();
+  // re-render current view
+  switchView(state.view);
+}
+
+function updateClock() {
+  document.getElementById("currentTime").textContent = fmtClock();
+}
+
+// INIT
+loadState();
+state.selectedGymDay = todayKey();
+document.getElementById("dateLine").textContent = fmtDate();
+document.getElementById("dayLabel").textContent = new Date().toLocaleDateString("en-US", { weekday: "short" }).toUpperCase();
+updateClock();
+setInterval(updateClock, 30000); // update clock every 30s
+setInterval(() => { if (state.view === "now") renderNow(); }, 60000); // update "now" block every minute
+
+document.querySelectorAll(".tab").forEach(t => {
+  t.addEventListener("click", () => switchView(t.dataset.view));
+});
+document.querySelectorAll(".phase-btn").forEach(b => {
+  b.addEventListener("click", () => switchPhase(Number(b.dataset.phase)));
+});
+document.getElementById("breathBtn").addEventListener("click", () => {
+  if (breathRunning) stopBreath();
+  else startBreath();
+});
+
+// set initial phase UI
+document.querySelectorAll(".phase-btn").forEach(b => b.classList.toggle("active", Number(b.dataset.phase) === state.phase));
+
+renderNow();
+</script>
+</body>
+</html>
